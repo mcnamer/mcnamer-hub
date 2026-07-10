@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   PROJECT OLYMPUS — THE DESIGN SYSTEM
+   "One field, one metal, five wavelengths, two daylights."
+
+   This file is the CSS half of the constitution. The TypeScript half lives in
+   src/lib/design/*. Tokens declared in @theme become Tailwind utilities
+   (bg-field-navy, text-ink, etc.) AND raw custom properties (var(--field-navy))
+   for the arbitrary work the motion system does at runtime.
+   ========================================================================== */
+
+@theme {
+  /* --- THE FIELD (navy family — dark surfaces never use gray) --- */
+  --color-field-midnight: #0a1626; /* Deepest space — Movements I, II, VII */
+  --color-field-navy: #16304d; /* Brand anchor — standard dark field, footer */
+  --color-field-dusk: #22436b; /* Elevated dark surfaces, Refractor tint base */
+  --color-field-slate: #3a5678; /* Borders + quiet structure on dark only */
+
+  /* --- THE DAYLIGHT (cream family) --- */
+  --color-light-cream: #faf6ee; /* The human field — Mvt IV, Story, AutismWorks */
+  --color-light-paper: #fdfcf9; /* Content surfaces on cream */
+  --color-light-linen: #f1ead9; /* Recessed daylight surfaces, 1px print rules */
+  --color-ink: #1c2b3a; /* Body text on daylight (~13.5:1 on cream) */
+
+  /* --- THE METAL (three sanctioned jobs only) --- */
+  --color-gold: #e0a93b; /* Ledger-rule · warm focus ring on dark · the mark */
+  --color-gold-deep: #8a6210; /* Text-grade sibling for the rare gold word on light */
+
+  /* --- THE FIVE WAVELENGTHS (display tone / text tone) --- */
+  --color-amber: #e89b4b;
+  --color-amber-text: #7a5310;
+  --color-azure: #4fa3e8;
+  --color-azure-text: #175a93;
+  --color-indigo: #8f8ff2;
+  --color-indigo-text: #453fbe;
+  --color-violet: #b07ce8;
+  --color-violet-text: #6b21a8;
+  --color-teal: #35c7b8;
+  --color-teal-text: #0f766e;
+  --color-teal-brand: #0d9488; /* AutismWorks brand mark, preserved */
+
+  /* --- TYPOGRAPHY: two families, absolute division of labor --- */
+  --font-voice: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-hand: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  /* The Scale (fluid, clamp-based) */
+  --text-display-hero: clamp(3.5rem, 2rem + 8vw, 7.5rem); /* 56 → 120 */
+  --text-display-hero--line-height: 1.05;
+  --text-display-1: clamp(2.5rem, 1.6rem + 4vw, 4.5rem); /* 40 → 72 */
+  --text-display-1--line-height: 1.08;
+  --text-display-2: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem); /* 28 → 44 */
+  --text-display-2--line-height: 1.12;
+  --text-title: clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem); /* 22 → 28 */
+  --text-title--line-height: 1.2;
+  --text-body-large: clamp(1.125rem, 1rem + 0.3vw, 1.25rem); /* 18 → 20 */
+  --text-body-large--line-height: 1.6;
+  --text-body: 1rem; /* 16 fixed */
+  --text-body--line-height: 1.6;
+  --text-caption: 0.8125rem; /* 13 — the murmur register */
+  --text-caption--line-height: 1.4;
+
+  /* --- SPACING SCALE (whitespace is bought from the top first) --- */
+  --spacing-4: 0.25rem;
+  --spacing-8: 0.5rem;
+  --spacing-12: 0.75rem;
+  --spacing-16: 1rem;
+  --spacing-24: 1.5rem;
+  --spacing-32: 2rem;
+  --spacing-48: 3rem;
+  --spacing-64: 4rem;
+  --spacing-96: 6rem;
+  --spacing-128: 8rem;
+  --spacing-192: 12rem;
+
+  /* --- LAYOUT --- */
+  --container-stage: 1440px;
+  --container-content: 1280px;
+
+  /* --- MOTION TOKENS (mirror of src/lib/design/motion.ts) --- */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-photographic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-refraction: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-settle: 300ms;
+  --duration-photographic: 600ms;
+  --duration-refraction: 900ms;
+  --duration-breath: 4000ms;
+}
+
+/* --------------------------------------------------------------------------
+   NON-TOKEN CUSTOM PROPERTIES
+   Contextual values set by React (the active wavelength/day-night) and read by
+   primitives. Color flows DOWN from context — a component reads --wave, it
+   never hard-codes a hex. Default: the spine (white light on midnight).
+   -------------------------------------------------------------------------- */
+:root {
+  /* The active wavelength display + text tones. Spine default = warm gold-white. */
+  --wave: var(--color-gold);
+  --wave-text: var(--color-gold-deep);
+  /* The active field + ink, set by the day-night position of the surface. */
+  --field: var(--color-field-midnight);
+  --ink-on-field: var(--color-light-cream);
+  /* The super-token: inter-movement breath (fluid 160 → 240px). */
+  --breath: clamp(10rem, 6rem + 12vw, 15rem);
+  /* Motion enablement flag, flipped to 0 under Calm Motion / reduced-motion. */
+  --motion: 1;
+
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   BASE LAYER
+   -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    /* Every colored signal is accompanied by label/position — but the focus
+       ring itself is a first-class citizen, designed, not a browser default. */
+    border-color: var(--color-field-slate);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Smooth scrolling is a system material, retired under reduced motion. */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--field);
+    color: var(--ink-on-field);
+    font-family: var(--font-hand);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    /* Measure discipline lives on prose containers, not the body. */
+    text-underline-offset: 0.15em;
+  }
+
+  /* The serif speaks; the sans works. */
+  .font-voice {
+    font-family: var(--font-voice);
+    font-feature-settings: "ss01", "liga", "kern";
+    letter-spacing: -0.01em;
+  }
+
+  /* The Murmur: small caps, tracked. "BEGIN", ray names on beams, eyebrows. */
+  .murmur {
+    font-family: var(--font-hand);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Prose links: underlined always at rest — non-negotiable affordance. */
+  .prose a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-thickness var(--duration-settle) var(--ease-settle);
+  }
+  .prose a:hover {
+    text-decoration-thickness: 2px;
+  }
+  .prose {
+    max-width: 68ch; /* Measure never exceeds 68 characters per line. */
+  }
+
+  /* Designed focus system: 2px wavelength ring, warm gold variant on dark. */
+  :focus-visible {
+    outline: 2px solid var(--wave);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Skip links styled as first-class citizens. */
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-field-navy);
+    color: var(--color-light-cream);
+    border: 1px solid var(--color-gold);
+    border-radius: 4px;
+    transform: translateY(-150%);
+    transition: transform var(--duration-settle) var(--ease-settle);
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  /* Text selection refracts too — contextual wavelength at 25%. */
+  ::selection {
+    background: color-mix(in srgb, var(--wave) 25%, transparent);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   THE GRAIN — the one dark material effect (2.5% tiled noise, multiply).
+   A static tile; never animated. Present only on dark day-night positions.
+   -------------------------------------------------------------------------- */
+@layer components {
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    mix-blend-mode: multiply;
+    background-image: url("/textures/grain.svg");
+    background-size: 180px 180px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   THE BREATH — the site's ambient pulse (±2% luminosity, 4s, sine, infinite).
+   Never triggered, never stops. Retired entirely under Calm Motion.
+   -------------------------------------------------------------------------- */
+@keyframes breath {
+  0%,
+  100% {
+    opacity: 0.94;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.breath {
+  animation: breath var(--duration-breath) var(--ease-settle) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   THE MOTION ACCESSIBILITY CONTRACT
+   OS signal observed automatically; the Calm Motion footer toggle sets
+   [data-calm-motion="true"] on <html>. Under either: Breath stops, smooth
+   scroll retires, displacement zeroes. Nothing lost but motion.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .breath {
+    animation: none;
+    opacity: 1;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html[data-calm-motion="true"] {
+  scroll-behavior: auto;
+  --motion: 0;
+}
+html[data-calm-motion="true"] .breath {
+  animation: none;
+  opacity: 1;
+}
