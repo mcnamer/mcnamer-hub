@@ -1,0 +1,1468 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Geometry Quest</title>
+<style>
+:root{
+  --bg:#f3f6ff;--card:#fff;--ink:#1f2a44;--muted:#5f6c8a;--line:#dbe3f5;
+  --blue:#3b6df2;--blue-d:#2c54c4;--blue-l:#e8eeff;--orange:#ff8a3d;--green:#2fb36d;--green-l:#e3f7ec;
+  --red:#d9534f;--red-l:#fdecea;--amber:#f5a524;--amber-l:#fff6e0;--gold:#f5b301;
+  --r:20px;--shadow:0 6px 20px rgba(31,42,68,.08);
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.45 "Avenir Next","Nunito","Trebuchet MS",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+#app{max-width:820px;margin:0 auto;padding:14px 16px 60px}
+h1,h2,h3{line-height:1.2;margin:.2em 0 .4em}
+h1{font-size:2.2rem}h2{font-size:1.6rem}
+p{margin:.4em 0}
+.small{font-size:.85rem}.muted{color:var(--muted)}.center{text-align:center}.gold{color:var(--gold);letter-spacing:2px}
+.big{font-size:3.4rem;line-height:1}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:22px;margin:14px 0}
+.lead{font-size:1.15rem;color:#33415f}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0 6px}
+.logo{border:0;background:none;font-size:1.15rem;padding:8px 4px}
+.top-r{display:flex;gap:6px}
+.icon-btn{width:46px;height:46px;border-radius:14px;border:2px solid var(--line);background:#fff;font-size:1.25rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:10px 20px;border-radius:16px;border:2px solid var(--line);background:#fff;font-weight:700;font-size:1rem;box-shadow:0 2px 0 var(--line);transition:transform .08s}
+.btn:hover:not(:disabled){border-color:var(--blue)}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--blue);border-color:var(--blue-d);color:#fff;box-shadow:0 3px 0 var(--blue-d)}
+.btn.primary:hover:not(:disabled){background:#4d7bf5}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--muted)}
+.btn.danger{color:var(--red);border-color:#f1c3c1}
+.btn.big-btn{min-height:62px;font-size:1.2rem;width:100%}
+.btn.small-btn{min-height:42px;padding:6px 14px;font-size:.9rem;border-radius:12px}
+.btn.file{cursor:pointer}
+.stack{display:flex;flex-direction:column;gap:12px;margin:16px auto 6px;max-width:460px}
+.actions-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 4px}
+.actions-row>.big-btn,.actions-row>.win{grid-column:1/-1}
+.badge{background:var(--orange);color:#fff;border-radius:99px;padding:0 9px;font-size:.85rem}
+.chip{display:inline-block;background:var(--blue-l);color:var(--blue-d);font-size:.78rem;font-weight:700;border-radius:99px;padding:2px 10px}
+.sect{margin:22px 4px 8px}
+.win{background:var(--amber-l);border:2px solid #f1d28a;font-weight:700}
+.hero{text-align:center;margin-top:8vh}
+.field{display:block;text-align:left;font-weight:700;margin:18px auto;max-width:360px}
+.field input[type=text]{display:block;width:100%;margin-top:6px;padding:14px;font:inherit;border:2px solid var(--line);border-radius:14px}
+.check{display:flex;gap:10px;align-items:center;margin:14px 0;font-weight:600}
+.check input{width:24px;height:24px}
+/* welcome */
+.welcome-card{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.welcome-card h2{margin:0}.rank{font-weight:800;color:var(--blue-d);margin:4px 0}
+.xp{height:12px;background:var(--blue-l);border-radius:99px;overflow:hidden;min-width:220px}
+.xp i,.bar i,.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#59a5ff);border-radius:99px;transition:width .4s}
+.wc-r{display:flex;gap:12px}
+.stat{background:var(--bg);border-radius:14px;padding:8px 14px;text-align:center;min-width:92px}
+.stat b{display:block;font-size:1.5rem}.stat span{font-size:.78rem;color:var(--muted)}
+/* skills */
+.skills{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.skill{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px 14px 12px;box-shadow:0 2px 0 var(--line)}
+.skill:hover{border-color:var(--blue)}
+.skill .s-num{position:absolute;top:10px;right:12px;font-weight:800;color:#a9b6d3}
+.skill .s-icon{font-size:2rem;line-height:1}
+.skill .s-name{font-weight:800;font-size:1.05rem;line-height:1.2}
+.skill .s-stars{color:var(--gold);letter-spacing:2px}
+.skill .s-state{font-size:.8rem;color:var(--muted);font-weight:700}
+.skill.done{background:var(--green-l);border-color:#b6e5cb}.skill.done .s-state{color:#1c8a50}
+.skill.new{border-color:var(--orange)}.skill.new .s-state{color:#d96a14}
+.skill.locked{opacity:.55;background:#eef1f8}
+.meter{display:block;width:100%;height:8px;background:var(--blue-l);border-radius:99px;overflow:hidden}
+.meter.inline{display:inline-block;width:70px;vertical-align:middle}
+.stars-big{font-size:2.6rem;color:var(--gold);letter-spacing:6px}
+.stars-big.pop{animation:pop .6s ease-out}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+/* quiz */
+.q-top{padding-bottom:0}.q-title{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.q-stats{display:flex;gap:12px;font-weight:800}.q-stats .hot{color:#e8590c}
+.bar{height:12px;background:#dfe6f7;border-radius:99px;overflow:hidden;margin:8px 0 2px}
+.qn{text-align:right}
+.qcard{padding:18px}
+.prompt{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.prompt p{font-size:1.35rem;font-weight:800;margin:4px 0 8px}
+.speak{flex:none;width:48px;height:48px;border-radius:50%;border:2px solid var(--line);background:var(--blue-l);font-size:1.3rem}
+.visual{display:flex;justify-content:center;margin:6px 0 14px;background:#f8faff;border:2px dashed var(--line);border-radius:16px;padding:8px}
+.visual svg{width:min(100%,340px);height:auto;max-height:230px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choices.n2{grid-template-columns:1fr 1fr}
+.choice{display:flex;align-items:center;gap:12px;min-height:66px;padding:10px 14px;background:#fff;border:3px solid var(--line);border-radius:16px;font-weight:800;font-size:1.15rem;text-align:left;box-shadow:0 3px 0 var(--line);transition:transform .08s,border-color .12s}
+.choice:hover:not(:disabled){border-color:var(--blue);background:var(--blue-l)}
+.choice .key{flex:none;width:28px;height:28px;border-radius:8px;background:var(--blue-l);color:var(--blue-d);display:grid;place-items:center;font-size:.85rem}
+.choice .clabel{flex:1}
+.choices.pics .choice{flex-direction:column;justify-content:center;padding:10px;position:relative}
+.choices.pics .key{position:absolute;top:8px;left:8px}
+.cpic svg{width:100%;max-width:150px;height:auto;max-height:130px}
+.choice.wrong{background:var(--red-l);border-color:#f0b0ae;color:#8c2f2c;opacity:.75;animation:shake .35s}
+.choice.right{background:var(--green-l);border-color:var(--green);box-shadow:0 0 0 3px #bdebd1}
+.choice:disabled{cursor:default}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.coach{margin-top:16px;padding:16px 18px;border-radius:16px;border:2px solid var(--line);animation:slide .25s ease-out}
+@keyframes slide{from{opacity:0;transform:translateY(8px)}}
+.coach[hidden]{display:none}
+.coach .c-head{font-weight:800;font-size:1.2rem;margin-bottom:4px}
+.coach.good{background:var(--green-l);border-color:#a6dfc0}
+.coach.ok{background:#eaf6ff;border-color:#b5dbf5}
+.coach.warn{background:var(--amber-l);border-color:#f1d28a}
+.coach.bad{background:#eef2ff;border-color:#c3cff5}
+.coach.neutral{background:#f2f5fb}
+.coach .hint{background:#fff;border-radius:12px;padding:8px 12px}
+.coach .note{color:var(--muted);font-size:.95rem}
+.coach .bonus{color:#d96a14;font-weight:700;font-size:.9rem}
+.coach .solved{display:flex;justify-content:center;background:#fff;border-radius:14px;margin:8px 0;padding:6px}
+.coach .solved svg{width:min(100%,220px);height:auto}
+.c-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.coach .next{width:100%;margin-top:8px;min-height:58px;font-size:1.15rem}
+/* results */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+.unlock{background:var(--green-l);border:2px solid #a6dfc0;border-radius:14px;padding:12px;font-weight:700;margin:10px 0}
+/* lists/tables */
+.list{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:14px;padding:10px 12px}
+.r-ico{font-size:1.6rem}.r-main{flex:1;display:flex;flex-direction:column}
+.empty{background:var(--bg);border-radius:14px;padding:22px;text-align:center}
+.table-wrap{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-size:.8rem}tr.dim{opacity:.5}
+/* flashcards */
+.learn{padding:6px 0}
+.learn-head{display:flex;justify-content:space-between;align-items:center;margin:6px 4px}
+.flip{perspective:1200px;height:380px;margin:10px 0;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d}
+.flip.flipped .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff;border:3px solid var(--line);border-radius:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;text-align:center;overflow:hidden}
+.face.back{transform:rotateY(180deg);background:linear-gradient(180deg,#fff,var(--blue-l));border-color:var(--blue)}
+.face .vis svg{width:min(100%,240px);height:auto;max-height:200px}
+.face .fq{font-weight:800;font-size:1.25rem;margin-top:8px}
+.face .hintline{font-size:.8rem;color:var(--muted);margin-top:8px}
+.face.back h2{color:var(--blue-d);font-size:1.7rem}.face.back p{font-size:1.2rem}
+.nav{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.nav .btn{flex:1}
+#overlay{position:fixed;inset:0;background:rgba(31,42,68,.55);display:grid;place-items:center;padding:14px;z-index:50;overflow:auto}
+#overlay .sheet{position:relative;background:var(--bg);border-radius:24px;max-width:640px;width:100%;padding:18px;max-height:96vh;overflow:auto}
+#overlay .x{position:absolute;top:10px;right:10px;width:42px;height:42px;border-radius:50%;border:2px solid var(--line);background:#fff;z-index:2}
+#overlay .flip{height:340px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);background:#26334f;color:#fff;padding:12px 18px;border-radius:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:560px){
+  body{font-size:17px}
+  .choices{grid-template-columns:1fr}.choices.pics{grid-template-columns:1fr 1fr}
+  .actions-row{grid-template-columns:1fr}.wc-r{width:100%}.stat{flex:1}
+  .flip{height:340px}.prompt p{font-size:1.2rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.btn.armed{background:var(--red-l);border-color:var(--red);color:var(--red)}
+
+html{color-scheme:light}body{background:var(--bg);color:var(--ink)}
+</style>
+<div id="app"><noscript>Please turn on JavaScript to use Geometry Quest.</noscript></div>
+<script>
+'use strict';
+/* ============================================================
+   Geometry Quest - question generators, drawings and lesson cards
+   Every skill has: gen(d) -> question, cards() -> flashcards
+   d = difficulty 0 (easy) .. 2 (hard) inside the skill
+   ============================================================ */
+
+/* ---------- small helpers ---------- */
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const an = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
+let _uid = 0; const nid = () => 'g' + (++_uid);
+const rad = d => d * Math.PI / 180;
+const f1 = n => (+n).toFixed(1);
+
+const COLORS = ['#ff8a65', '#4fc3f7', '#81c784', '#ba68c8', '#ffd54f', '#f06292', '#4db6ac', '#9575cd'];
+const STROKE = '#2b3a55';
+const INK = '#2b3a55';
+const ACCENT = '#e65100';
+
+function mix(hex, t, to) {
+  const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  r = Math.round(r + (to - r) * t); g = Math.round(g + (to - g) * t); b = Math.round(b + (to - b) * t);
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+const lighten = (h, t) => mix(h, t, 255);
+const darken = (h, t) => mix(h, t, 0);
+
+/* ---------- svg helpers ---------- */
+function svg(w, h, inner, vb) {
+  return `<svg viewBox="${vb || `0 0 ${w} ${h}`}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
+}
+const P2S = pts => pts.map(p => f1(p[0]) + ',' + f1(p[1])).join(' ');
+const poly = (pts, fill, extra) => `<polygon points="${P2S(pts)}" fill="${fill}" stroke="${STROKE}" stroke-width="3" stroke-linejoin="round" ${extra || ''}/>`;
+const line = (x1, y1, x2, y2, o = {}) => `<line x1="${f1(x1)}" y1="${f1(y1)}" x2="${f1(x2)}" y2="${f1(y2)}" stroke="${o.c || INK}" stroke-width="${o.w || 3}" stroke-linecap="round" ${o.dash ? `stroke-dasharray="${o.dash}"` : ''}/>`;
+const text = (x, y, s, o = {}) => `<text x="${f1(x)}" y="${f1(y)}" text-anchor="${o.a || 'middle'}" font-size="${o.s || 12}" font-weight="${o.b === false ? 500 : 700}" fill="${o.c || INK}" font-family="Avenir Next,Nunito,Arial,sans-serif" dominant-baseline="central">${s}</text>`;
+const dot = (x, y, r = 4.5, c = INK) => `<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${c}"/>`;
+const regPts = (n, cx, cy, r, rot = -90) => Array.from({ length: n }, (_, i) => { const a = rad(rot + i * 360 / n); return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; });
+const centroid = pts => [pts.reduce((s, p) => s + p[0], 0) / pts.length, pts.reduce((s, p) => s + p[1], 0) / pts.length];
+function arrowHead(x, y, deg, c = INK) { // tip at x,y pointing along deg
+  const d = [Math.cos(rad(deg)), Math.sin(rad(deg))], n = [-d[1], d[0]];
+  const b = [x - 11 * d[0], y - 11 * d[1]];
+  return `<polygon points="${P2S([[x, y], [b[0] + 5.5 * n[0], b[1] + 5.5 * n[1]], [b[0] - 5.5 * n[0], b[1] - 5.5 * n[1]]])}" fill="${c}"/>`;
+}
+function rightMark(v, a, b, s = 13, c = ACCENT) { // square marker at vertex v between points a and b
+  const u = unit(a[0] - v[0], a[1] - v[1]), w = unit(b[0] - v[0], b[1] - v[1]);
+  const p1 = [v[0] + u[0] * s, v[1] + u[1] * s], p2 = [p1[0] + w[0] * s, p1[1] + w[1] * s], p3 = [v[0] + w[0] * s, v[1] + w[1] * s];
+  return `<polyline points="${P2S([p1, p2, p3])}" fill="none" stroke="${c}" stroke-width="2.5"/>`;
+}
+function unit(x, y) { const l = Math.hypot(x, y) || 1; return [x / l, y / l]; }
+
+/* ---------- question builder ---------- */
+const normC = c => (typeof c === 'string' || typeof c === 'number') ? { label: String(c) } : c;
+const keyOf = c => c.label !== undefined ? 'L' + c.label : 'S' + c.svg;
+function mk(o) {
+  const correct = normC(o.correct);
+  const seen = new Set([keyOf(correct)]);
+  let wrong = (o.wrong || []).map(normC).filter(w => { const k = keyOf(w); if (seen.has(k)) return false; seen.add(k); return true; });
+  wrong = shuffle(wrong).slice(0, (o.n || 4) - 1);
+  let items;
+  if (o.pos !== undefined) { items = wrong.map(w => ({ ...w, ok: false })); items.splice(o.pos, 0, { ...correct, ok: true }); }
+  else items = shuffle([{ ...correct, ok: true }, ...wrong.map(w => ({ ...w, ok: false }))]);
+  return {
+    prompt: o.prompt, visual: o.visual || null, choices: items, answer: items.findIndex(c => c.ok),
+    hint: o.hint || 'Look closely at the picture and think about what you learned.',
+    explain: o.explain || '', solved: o.solved || null, pics: items.some(c => c.svg !== undefined)
+  };
+}
+function tf(prompt, isTrue, hint, explain, visual) {
+  return mk({ prompt, visual, correct: isTrue ? 'True' : 'False', wrong: [isTrue ? 'False' : 'True'], pos: isTrue ? 0 : 1, hint, explain });
+}
+function nums(correct, extra = [], lo = 0) {
+  const s = new Set();
+  extra.forEach(x => { if (x !== correct && x >= lo && Number.isFinite(x)) s.add(x); });
+  let t = 0; while (s.size < 6 && t++ < 60) { const v = correct + pick([-4, -3, -2, -1, 1, 2, 3, 4, 5, 10]); if (v >= lo && v !== correct) s.add(v); }
+  return [...s];
+}
+
+/* ============================================================
+   SHAPES
+   ============================================================ */
+const POLYS = {
+  triangle: [[60, 14], [108, 98], [12, 98]],
+  square: [[24, 24], [96, 24], [96, 96], [24, 96]],
+  rectangle: [[10, 32], [110, 32], [110, 88], [10, 88]],
+  pentagon: regPts(5, 60, 64, 48),
+  hexagon: regPts(6, 60, 60, 48, 0),
+  octagon: regPts(8, 60, 60, 48, -67.5),
+  rhombus: [[60, 12], [106, 60], [60, 108], [14, 60]],
+  trapezoid: [[36, 28], [84, 28], [110, 92], [10, 92]],
+  parallelogram: [[38, 30], [112, 30], [82, 90], [8, 90]],
+  kite: [[60, 10], [96, 48], [60, 112], [24, 48]]
+};
+const FACT = {
+  circle: 'A circle is perfectly round. It has no sides and no corners.',
+  oval: 'An oval is round like an egg. It has no corners.',
+  square: 'A square has 4 sides that are all the same length, and 4 square corners.',
+  rectangle: 'A rectangle has 4 sides and 4 square corners. It has 2 long sides and 2 short sides.',
+  triangle: 'A triangle has 3 sides and 3 corners.',
+  pentagon: 'A pentagon has 5 sides and 5 corners.',
+  hexagon: 'A hexagon has 6 sides and 6 corners.',
+  octagon: 'An octagon has 8 sides and 8 corners, like a stop sign.',
+  rhombus: 'A rhombus has 4 sides that are all the same length. Its corners are slanted, so it looks like a tilted square.',
+  trapezoid: 'A trapezoid has 4 sides. Its top and bottom are parallel, but the other two sides are not.',
+  parallelogram: 'A parallelogram has 4 sides. Opposite sides are parallel and the same length, but the corners are slanted.',
+  kite: 'A kite has 4 sides: two short sides next to each other and two long sides next to each other.'
+};
+const SIDES = { triangle: 3, square: 4, rectangle: 4, pentagon: 5, hexagon: 6, octagon: 8 };
+
+function shapeInner(name, fill, pts) {
+  if (name === 'circle') return `<circle cx="60" cy="60" r="42" fill="${fill}" stroke="${STROKE}" stroke-width="3"/>`;
+  if (name === 'oval') return `<ellipse cx="60" cy="60" rx="50" ry="32" fill="${fill}" stroke="${STROKE}" stroke-width="3"/>`;
+  return poly(pts || POLYS[name], fill);
+}
+function shapeSvg(name, fill, pts) { return svg(120, 120, shapeInner(name, fill || pick(COLORS), pts)); }
+function shapeSvgVar(name) {
+  let pts = null;
+  if (name === 'rectangle') { const w = rnd(96, 108), h = rnd(40, 60); pts = [[60 - w / 2, 60 - h / 2], [60 + w / 2, 60 - h / 2], [60 + w / 2, 60 + h / 2], [60 - w / 2, 60 + h / 2]]; }
+  if (name === 'triangle') pts = pick([[[60, 14], [108, 98], [12, 98]], [[20, 24], [20, 98], [104, 98]], [[30, 98], [100, 98], [78, 20]], [[60, 20], [110, 90], [24, 100]]]);
+  return shapeSvg(name, null, pts);
+}
+function numberedSvg(name) {
+  const pts = POLYS[name], c = centroid(pts); let s = poly(pts, lighten(pick(COLORS), .35));
+  pts.forEach((p, i) => { const u = unit(p[0] - c[0], p[1] - c[1]); const x = p[0] + u[0] * 13, y = p[1] + u[1] * 13; s += `<circle cx="${f1(x)}" cy="${f1(y)}" r="9" fill="#fff" stroke="${ACCENT}" stroke-width="2"/>` + text(x, y, i + 1, { s: 11, c: ACCENT }); });
+  return svg(0, 0, s, '-14 -14 148 148');
+}
+
+/* ---------- Skill 1: Name That Shape ---------- */
+function genShapes(d) {
+  const pool = ['circle', 'square', 'rectangle', 'triangle'];
+  if (d >= 1) pool.push('pentagon', 'hexagon', 'oval');
+  if (d >= 2) pool.push('octagon', 'rhombus');
+  const s = pick(pool), others = pool.filter(x => x !== s);
+  if (Math.random() < .55) {
+    return mk({
+      prompt: 'What shape is this?', visual: shapeSvgVar(s), correct: cap(s),
+      wrong: others.map(x => ({ label: cap(x), why: `Not ${an(x)}. ${FACT[x]}` })),
+      hint: 'Count the sides and the corners. Are they straight or round?', explain: FACT[s]
+    });
+  }
+  return mk({
+    prompt: `Tap the ${s}.`, correct: { svg: shapeSvgVar(s) },
+    wrong: others.map(x => ({ svg: shapeSvgVar(x), why: `That one is ${an(x)}. ${FACT[x]}` })),
+    hint: 'Think about how many sides and corners the shape you want has.', explain: FACT[s]
+  });
+}
+function cardsShapes() {
+  return ['circle', 'square', 'rectangle', 'triangle', 'oval', 'pentagon', 'hexagon', 'octagon', 'rhombus'].map(s => ({ v: shapeSvg(s), t: cap(s), d: FACT[s] }));
+}
+
+/* ---------- Skill 2: Sides & Corners ---------- */
+function genSides(d) {
+  const pool = ['triangle', 'square', 'rectangle'];
+  if (d >= 1) pool.push('pentagon', 'hexagon');
+  if (d >= 2) pool.push('octagon');
+  const t = pick(d >= 2 ? ['sides', 'corners', 'find', 'name'] : ['sides', 'corners', 'find']);
+  const s = pick(pool), n = SIDES[s];
+  const exp = `${cap(an(s))} has ${n} sides and ${n} corners. A shape always has the same number of sides and corners.`;
+  if (t === 'sides' || t === 'corners') {
+    const word = t;
+    return mk({
+      prompt: `How many ${word} does this shape have?`, visual: shapeSvgVar(s), correct: n, wrong: nums(n, [n + 1, n - 1, n + 2], 2),
+      hint: `Put your finger on one ${word === 'sides' ? 'side' : 'corner'}, then count all the way around.`, explain: exp, solved: numberedSvg(s)
+    });
+  }
+  if (t === 'find') {
+    const cand = pool.filter(x => SIDES[x] !== 4 && x !== s);
+    const target = pool.filter(x => SIDES[x] !== 4);
+    const tt = pick(target), nn = SIDES[tt];
+    const wr = pool.filter(x => SIDES[x] !== nn);
+    return mk({
+      prompt: `Tap the shape with ${nn} sides.`, correct: { svg: shapeSvgVar(tt) },
+      wrong: wr.map(x => ({ svg: shapeSvgVar(x), why: `That one is ${an(x)}. It has ${SIDES[x]} sides.` })),
+      hint: 'Count the sides of each picture. Which one matches?', explain: `A ${tt} has ${nn} sides.`
+    });
+  }
+  const target = pool.filter(x => SIDES[x] !== 4); const tt = pick(target), nn = SIDES[tt];
+  return mk({
+    prompt: `A shape has ${nn} sides and ${nn} corners. What is it?`, correct: cap(tt),
+    wrong: Object.keys(SIDES).filter(x => SIDES[x] !== nn && x !== 'rectangle').map(x => ({ label: cap(x), why: `${cap(an(x))} has ${SIDES[x]} sides, not ${nn}.` })),
+    hint: 'Triangle = 3, pentagon = 5, hexagon = 6, octagon = 8.', explain: `${cap(an(tt))} has ${nn} sides and ${nn} corners.`
+  });
+}
+function cardsSides() {
+  const nm = { triangle: 3, square: 4, rectangle: 4, pentagon: 5, hexagon: 6, octagon: 8 };
+  const prefix = { triangle: 'Tri means 3.', square: 'It has 4 equal sides.', rectangle: 'Opposite sides are equal.', pentagon: 'Penta means 5.', hexagon: 'Hex means 6.', octagon: 'Octo means 8, like an octopus has 8 arms.' };
+  return Object.keys(nm).map(s => ({ v: numberedSvg(s), q: `How many sides and corners does a ${s} have?`, t: `${nm[s]} sides, ${nm[s]} corners`, d: `${cap(s)}. ${prefix[s]} Corners are where two sides meet.` }));
+}
+
+/* ---------- Skill 3: 3D Shapes ---------- */
+function solid(name, fill) {
+  const f = fill || pick(COLORS), id = nid();
+  switch (name) {
+    case 'sphere': return svg(120, 120, `<defs><radialGradient id="${id}" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="${f}"/></radialGradient></defs><circle cx="60" cy="60" r="44" fill="url(#${id})" stroke="${STROKE}" stroke-width="3"/>`);
+    case 'cube': return svg(120, 120, poly([[16, 44], [70, 44], [70, 98], [16, 98]], f) + poly([[16, 44], [46, 16], [100, 16], [70, 44]], lighten(f, .4)) + poly([[70, 44], [100, 16], [100, 70], [70, 98]], darken(f, .2)));
+    case 'prism': return svg(120, 120, poly([[8, 52], [78, 52], [78, 100], [8, 100]], f) + poly([[8, 52], [36, 24], [106, 24], [78, 52]], lighten(f, .4)) + poly([[78, 52], [106, 24], [106, 72], [78, 100]], darken(f, .2)));
+    case 'cylinder': return svg(120, 120, `<path d="M24,32 V88 A36,13 0 0 0 96,88 V32 Z" fill="${f}" stroke="${STROKE}" stroke-width="3" stroke-linejoin="round"/><ellipse cx="60" cy="32" rx="36" ry="13" fill="${lighten(f, .4)}" stroke="${STROKE}" stroke-width="3"/>`);
+    case 'cone': return svg(120, 120, `<path d="M60,12 L100,92 A40,14 0 0 1 20,92 Z" fill="${f}" stroke="${STROKE}" stroke-width="3" stroke-linejoin="round"/>`);
+    case 'pyramid': return svg(120, 120, poly([[14, 90], [72, 102], [60, 14]], f) + poly([[72, 102], [106, 80], [60, 14]], darken(f, .2)));
+  }
+}
+const SOLIDS = {
+  cube: { n: 'cube', faces: 6, verts: 8, d: 'A cube has 6 flat faces. All of them are squares. Dice are cubes.', real: ['a dice', 'a toy block'] },
+  prism: { n: 'rectangular prism', faces: 6, verts: 8, d: 'A rectangular prism looks like a box. It has 6 flat faces that are rectangles.', real: ['a cereal box', 'a shoe box', 'a brick'] },
+  sphere: { n: 'sphere', faces: 0, verts: 0, d: 'A sphere is round like a ball. It has no flat faces and no corners. It can roll.', real: ['a ball', 'a globe'] },
+  cylinder: { n: 'cylinder', faces: 2, verts: 0, d: 'A cylinder has 2 flat circle faces and a curved side. A can is a cylinder.', real: ['a soup can', 'a drum'] },
+  cone: { n: 'cone', faces: 1, verts: 1, d: 'A cone has 1 flat circle face, a curved side, and 1 pointy tip.', real: ['an ice cream cone', 'a party hat'] },
+  pyramid: { n: 'pyramid', faces: 5, verts: 5, d: 'A square pyramid has a square bottom and 4 triangle sides that meet at a point at the top.', real: ['an Egyptian pyramid'] }
+};
+function gen3D(d) {
+  const keys = ['cube', 'sphere', 'cone', 'cylinder']; if (d >= 1) keys.push('prism', 'pyramid');
+  const k = pick(keys), S = SOLIDS[k], others = keys.filter(x => x !== k);
+  const t = pick(d >= 2 ? ['name', 'real', 'faces', 'verts', 'faces', 'verts'] : d === 1 ? ['name', 'real', 'faces'] : ['name', 'real']);
+  if (t === 'name') return mk({ prompt: 'What 3D shape is this?', visual: solid(k), correct: cap(S.n), wrong: others.map(x => ({ label: cap(SOLIDS[x].n), why: `Not a ${SOLIDS[x].n}. ${SOLIDS[x].d}` })), hint: 'Is it round, flat, pointy, or boxy? Can it roll?', explain: S.d });
+  if (t === 'real') {
+    const obj = pick(S.real);
+    return mk({ prompt: `Which shape looks like ${obj}?`, correct: { svg: solid(k) }, wrong: others.map(x => ({ svg: solid(x), why: `That one is ${an(SOLIDS[x].n)}. ${SOLIDS[x].d}` })), hint: 'Picture the real thing in your mind. What shape is it?', explain: `${cap(obj)} is shaped like ${an(S.n)}. ${S.d}` });
+  }
+  const w = t === 'faces' ? 'flat faces' : 'corners (vertices)'; const val = t === 'faces' ? S.faces : S.verts;
+  return mk({
+    prompt: `How many ${w} does ${an(S.n)} have?`, visual: solid(k), correct: val, wrong: nums(val, [0, 1, 2, 4, 6, 8], 0),
+    hint: t === 'faces' ? 'A face is a flat side. Curved sides do not count.' : 'A corner is where edges meet in a point.', explain: `${S.d} So it has ${val} ${w}.`
+  });
+}
+function cards3D() { return Object.keys(SOLIDS).map(k => ({ v: solid(k), t: cap(SOLIDS[k].n), d: `${SOLIDS[k].d} Faces: ${SOLIDS[k].faces}. Corners: ${SOLIDS[k].verts}.` })); }
+
+/* ---------- Skill 4: Halves & Fourths ---------- */
+function partsSvg(shape, o = {}) {
+  const id = nid(); let shapeEl, bb;
+  if (shape === 'circle') { shapeEl = a => `<circle cx="60" cy="60" r="44" ${a}/>`; bb = [16, 16, 104, 104]; }
+  else if (shape === 'square') { shapeEl = a => `<rect x="20" y="20" width="80" height="80" ${a}/>`; bb = [20, 20, 100, 100]; }
+  else { shapeEl = a => `<rect x="8" y="30" width="104" height="60" ${a}/>`; bb = [8, 30, 112, 90]; }
+  const [x0, y0, x1, y1] = bb, W = x1 - x0, H = y1 - y0, mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+  const lines = [], shade = [];
+  const kind = o.kind, ori = o.ori || 'v';
+  if (kind === 'h') { if (ori === 'v') lines.push([mx, y0, mx, y1]); else if (ori === 'h') lines.push([x0, my, x1, my]); else lines.push([x0, y0, x1, y1]); }
+  if (kind === 'hu') { if (ori === 'v') lines.push([x0 + W * .3, y0, x0 + W * .3, y1]); else lines.push([x0, y0 + H * .28, x1, y0 + H * .28]); }
+  if (kind === 'q') { if (o.style === 'strips') [.25, .5, .75].forEach(f => lines.push([x0 + W * f, y0, x0 + W * f, y1])); else if (o.style === 'x') { lines.push([x0, y0, x1, y1], [x1, y0, x0, y1]); } else lines.push([mx, y0, mx, y1], [x0, my, x1, my]); }
+  if (kind === 'qu') { if (o.style === 'strips') [.2, .5, .65].forEach(f => lines.push([x0 + W * f, y0, x0 + W * f, y1])); else lines.push([x0 + W * .36, y0, x0 + W * .36, y1], [x0, my, x1, my]); }
+  if (kind === 'three') { if (shape === 'circle') [-90, 30, 150].forEach(a => lines.push([60, 60, 60 + 50 * Math.cos(rad(a)), 60 + 50 * Math.sin(rad(a))])); else [1 / 3, 2 / 3].forEach(f => lines.push([x0 + W * f, y0, x0 + W * f, y1])); }
+  if (o.shade) o.shade.forEach(r => shade.push(r));
+  const col = o.color || '#ffb74d';
+  let s = `<defs><clipPath id="${id}">${shapeEl('')}</clipPath></defs>` + shapeEl('fill="#fff"') +
+    `<g clip-path="url(#${id})">` + shade.map(r => `<rect x="${r[0]}" y="${r[1]}" width="${r[2]}" height="${r[3]}" fill="${col}"/>`).join('') +
+    lines.map(l => line(l[0], l[1], l[2], l[3], { w: 2.5 })).join('') + `</g>` + shapeEl(`fill="none" stroke="${STROKE}" stroke-width="3"`);
+  return svg(120, 120, s);
+}
+function shadeRects(shape, parts, k) {
+  const bb = shape === 'circle' ? [16, 16, 104, 104] : shape === 'square' ? [20, 20, 100, 100] : [8, 30, 112, 90];
+  const [x0, y0, x1, y1] = bb, W = x1 - x0, H = y1 - y0, mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
+  if (parts === 2) return pick([{ ori: 'v', rects: [[mx, y0, W / 2, H]] }, { ori: 'v', rects: [[x0, y0, W / 2, H]] }, { ori: 'h', rects: [[x0, my, W, H / 2]] }, { ori: 'h', rects: [[x0, y0, W, H / 2]] }]);
+  const q = [[x0, y0, W / 2, H / 2], [mx, y0, W / 2, H / 2], [x0, my, W / 2, H / 2], [mx, my, W / 2, H / 2]];
+  return { ori: 'v', rects: shuffle(q).slice(0, k) };
+}
+function genFractions(d) {
+  const shape = pick(['circle', 'square', 'rect']); const t = pick(d === 0 ? ['name', 'find', 'shade'] : d === 1 ? ['name', 'find', 'shade', 'unequal'] : ['shade3', 'find', 'unequal', 'word', 'shade']);
+  const eq = 'Equal parts means every part is exactly the same size.';
+  if (t === 'name') {
+    const half = Math.random() < .5; const kind = half ? 'h' : 'q';
+    return mk({
+      prompt: 'This shape is cut into equal parts. What are the parts called?',
+      visual: partsSvg(shape, { kind, ori: pick(['v', 'h']), style: pick(['cross', 'cross', 'strips']) }),
+      correct: half ? 'Halves' : 'Fourths', wrong: [half ? 'Fourths' : 'Halves', { label: 'Thirds', why: 'Thirds have 3 equal parts.' }],
+      hint: 'Count the parts. 2 equal parts are halves. 4 equal parts are fourths.', explain: half ? 'Two equal parts are called halves.' : 'Four equal parts are called fourths (also called quarters).', n: 3
+    });
+  }
+  if (t === 'unequal') {
+    const half = Math.random() < .5;
+    return mk({
+      prompt: 'Is this shape cut into halves or fourths?',
+      visual: partsSvg(shape, { kind: half ? 'hu' : 'qu', ori: pick(['v', 'h']), style: pick(['cross', 'strips']) }),
+      correct: 'Neither: the parts are not equal', wrong: ['Halves', 'Fourths'], n: 3,
+      hint: 'Look at the sizes of the parts. Are they all the same?', explain: `${eq} Here some parts are bigger, so they are not halves or fourths.`
+    });
+  }
+  if (t === 'find') {
+    const half = Math.random() < .5; const w = half ? 'halves' : 'fourths';
+    const good = partsSvg(shape, { kind: half ? 'h' : 'q', ori: pick(['v', 'h']), style: pick(['cross', 'strips']) });
+    const wrong = half
+      ? [partsSvg(shape, { kind: 'hu', ori: pick(['v', 'h']) }), partsSvg(shape, { kind: 'q', style: 'cross' }), partsSvg(shape, { kind: 'three' })]
+      : [partsSvg(shape, { kind: 'qu', style: pick(['cross', 'strips']) }), partsSvg(shape, { kind: 'h', ori: 'v' }), partsSvg(shape, { kind: 'three' })];
+    return mk({ prompt: `Which shape is cut into ${w}?`, correct: { svg: good }, wrong: wrong.map((x, i) => ({ svg: x, why: half ? ['The parts are not equal.', 'That one has 4 parts.', 'That one has 3 parts.'][i] : ['The parts are not equal.', 'That one has only 2 parts.', 'That one has 3 parts.'][i] })), hint: `${w === 'halves' ? 'Halves = 2 equal parts.' : 'Fourths = 4 equal parts.'} Check the sizes!`, explain: `${w === 'halves' ? 'Halves are 2 equal parts.' : 'Fourths are 4 equal parts.'} ${eq}` });
+  }
+  if (t === 'shade' || t === 'shade3') {
+    const parts = (t === 'shade3') ? 4 : (Math.random() < .5 ? 2 : 4); const k = t === 'shade3' ? 3 : 1;
+    const label = parts === 2 ? 'One half' : k === 1 ? 'One fourth' : 'Three fourths';
+    const sh = shadeRects(shape, parts, k);
+    const v2 = partsSvg(shape, { kind: parts === 2 ? 'h' : 'q', ori: sh.ori, style: 'cross', shade: sh.rects });
+    return mk({
+      prompt: 'How much of the shape is colored?', visual: v2, correct: label,
+      wrong: ['One half', 'One fourth', 'Three fourths', 'The whole shape'].filter(x => x !== label).map(x => ({ label: x })),
+      hint: `Count all the equal parts. Then count the colored parts.`, explain: `The shape has ${parts} equal parts and ${k} ${k === 1 ? 'is' : 'are'} colored. So ${k} out of ${parts} = ${label.toLowerCase()}.`
+    });
+  }
+  const words = [
+    ['If you cut a pizza into 4 equal slices, each slice is called…', 'One fourth', ['One half', 'One whole', 'One third'], 'Four equal parts are fourths. Each one is one fourth, also called a quarter.'],
+    ['Which is bigger, one half or one fourth of the same pizza?', 'One half', ['One fourth', 'They are the same'], 'Fewer cuts make bigger pieces. Half of a pizza is bigger than a fourth.'],
+    ['How many halves make one whole?', '2', ['1', '3', '4'], 'Two halves put together make one whole.'],
+    ['How many fourths make one whole?', '4', ['2', '3', '8'], 'Four fourths put together make one whole.']
+  ];
+  const w = pick(words);
+  return mk({ prompt: w[0], correct: w[1], wrong: w[2], hint: 'Picture a pizza being cut. More equal pieces means smaller pieces.', explain: w[3] });
+}
+function cardsFractions() {
+  return [
+    { v: partsSvg('circle', { kind: 'h', ori: 'v', shade: [[60, 16, 44, 88]] }), t: 'Halves', d: 'Cut a shape into 2 equal parts. Each part is one half.' },
+    { v: partsSvg('square', { kind: 'q', style: 'cross', shade: [[60, 20, 40, 40]] }), t: 'Fourths', d: 'Cut a shape into 4 equal parts. Each part is one fourth (a quarter).' },
+    { v: partsSvg('rect', { kind: 'hu', ori: 'v' }), q: 'Is this cut into halves?', t: 'No! The parts are not equal', d: 'Halves and fourths need EQUAL parts. If one part is bigger, they are not halves.' },
+    { v: partsSvg('circle', { kind: 'q', style: 'cross', shade: [[60, 16, 44, 44], [16, 60, 44, 44], [60, 60, 44, 44]] }), q: 'How much is colored?', t: 'Three fourths', d: '3 of the 4 equal parts are colored.' }
+  ];
+}
+
+/* ---------- Skill 5: Angles ---------- */
+function angleSvg(deg, o = {}) {
+  const rot = o.rot !== undefined ? o.rot : rnd(0, 359), cx = 70, cy = 62, L = 50, r = 24;
+  const P = (a, l) => [cx + l * Math.cos(rad(a)), cy + l * Math.sin(rad(a))];
+  const p1 = P(rot, L), p2 = P(rot + deg, L), q1 = P(rot, r), q2 = P(rot + deg, r);
+  let s = `<path d="M${cx},${cy} L${f1(q1[0])},${f1(q1[1])} A${r},${r} 0 0 1 ${f1(q2[0])},${f1(q2[1])} Z" fill="#ffd54f99"/>`;
+  s += line(cx, cy, p1[0], p1[1], { w: 4.5 }) + line(cx, cy, p2[0], p2[1], { w: 4.5 });
+  if (deg === 90) s += rightMark([cx, cy], p1, p2, 15);
+  else s += `<path d="M${f1(q1[0])},${f1(q1[1])} A${r},${r} 0 0 1 ${f1(q2[0])},${f1(q2[1])}" fill="none" stroke="${ACCENT}" stroke-width="2.5"/>`;
+  s += dot(cx, cy, 5);
+  if (o.label) { const lp = P(rot + deg / 2, r + 17); s += text(lp[0], lp[1], o.label, { s: 13, c: ACCENT }); }
+  return svg(140, 124, s);
+}
+const angType = d => d < 90 ? 'acute' : d === 90 ? 'right' : d < 180 ? 'obtuse' : 'straight';
+const ANG_FACT = {
+  acute: 'An acute angle is smaller than a right angle (less than 90°). Think: "a cute little angle!"',
+  right: 'A right angle is a perfect square corner. It measures exactly 90°.',
+  obtuse: 'An obtuse angle is wider than a right angle but less than a straight line (between 90° and 180°).',
+  straight: 'A straight angle looks like a flat line. It measures 180°.'
+};
+function randAngle(type, d) {
+  if (type === 'acute') return d === 0 ? rnd(25, 65) : rnd(12, 80);
+  if (type === 'right') return 90;
+  if (type === 'obtuse') return d === 0 ? rnd(115, 155) : rnd(100, 168);
+  return 180;
+}
+function genAngles(d) {
+  const types = ['acute', 'right', 'obtuse']; if (d >= 2) types.push('straight');
+  const t = pick(d === 0 ? ['name', 'name', 'find'] : d === 1 ? ['name', 'find', 'deg', 'word'] : ['name', 'find', 'deg', 'word', 'deg']);
+  const type = pick(types), others = types.filter(x => x !== type);
+  if (t === 'name') {
+    const a = randAngle(type, d);
+    return mk({ prompt: 'What kind of angle is this?', visual: angleSvg(a), correct: cap(type), wrong: others.map(x => ({ label: cap(x), why: `Not ${x}. ${ANG_FACT[x]}` })), hint: 'Compare it to the corner of a book. Is it smaller, the same, or wider?', explain: ANG_FACT[type] });
+  }
+  if (t === 'find') {
+    return mk({ prompt: `Tap the ${type} angle.`, correct: { svg: angleSvg(randAngle(type, d)) }, wrong: others.map(x => ({ svg: angleSvg(randAngle(x, d)), why: `That one is ${x}. ${ANG_FACT[x]}` })), hint: 'A right angle is a square corner. Acute is smaller. Obtuse is wider.', explain: ANG_FACT[type] });
+  }
+  if (t === 'deg') {
+    const vals = { acute: rnd(10, 85), right: 90, obtuse: rnd(95, 170), straight: 180 };
+    const wr = others.map(x => ({ label: vals[x] + '°', why: `${vals[x]}° is ${x}.` }));
+    return mk({ prompt: `Which angle measure is ${an(type)} angle?`, correct: vals[type] + '°', wrong: wr, hint: 'Right = 90°. Acute is less than 90°. Obtuse is between 90° and 180°.', explain: `${ANG_FACT[type]}` });
+  }
+  const words = [
+    ['An angle that measures exactly 90° is called…', 'A right angle', ['An acute angle', 'An obtuse angle', 'A straight angle'], ANG_FACT.right],
+    ['An angle smaller than 90° is called…', 'An acute angle', ['A right angle', 'An obtuse angle', 'A straight angle'], ANG_FACT.acute],
+    ['An angle between 90° and 180° is called…', 'An obtuse angle', ['An acute angle', 'A right angle', 'A straight angle'], ANG_FACT.obtuse],
+    ['Where do you see a right angle?', 'The corner of a book', ['A slice of pizza tip', 'The edge of a circle', 'A wide-open door'], 'A book corner is a square corner, so it is a right angle.']
+  ];
+  const w = pick(words); return mk({ prompt: w[0], correct: w[1], wrong: w[2], hint: 'Remember: right = square corner, acute = small, obtuse = wide.', explain: w[3] });
+}
+function cardsAngles() {
+  return [
+    { v: angleSvg(45, { rot: -45 - 20, label: '' }), t: 'Acute angle', d: 'Smaller than a right angle (less than 90°). "A cute little angle!"' },
+    { v: angleSvg(90, { rot: -90 }), t: 'Right angle', d: 'A perfect square corner. Exactly 90°. It looks like the corner of a book.' },
+    { v: angleSvg(130, { rot: -115 }), t: 'Obtuse angle', d: 'Wider than a right angle but not flat. Between 90° and 180°.' },
+    { v: angleSvg(180, { rot: 180 }), t: 'Straight angle', d: 'A flat line. Exactly 180°. It is two right angles put together.' }
+  ];
+}
+
+/* ---------- Skill 6: Quadrilaterals ---------- */
+const QUADS = ['square', 'rectangle', 'rhombus', 'parallelogram', 'trapezoid'];
+function genQuads(d) {
+  const t = pick(d === 0 ? ['name', 'find', 'name'] : d === 1 ? ['name', 'find', 'clue', 'clue'] : ['clue', 'clue', 'fact', 'find', 'name']);
+  const pool = d === 0 ? ['square', 'rectangle', 'trapezoid', 'rhombus'] : QUADS;
+  const s = pick(pool), others = pool.filter(x => x !== s);
+  if (t === 'name') return mk({ prompt: 'What shape is this?', visual: shapeSvgVar(s), correct: cap(s), wrong: others.map(x => ({ label: cap(x), why: `Not ${an(x)}. ${FACT[x]}` })), hint: 'Check: are the sides equal? Are the corners square? Which sides are parallel?', explain: FACT[s] });
+  if (t === 'find') return mk({ prompt: `Tap the ${s}.`, correct: { svg: shapeSvgVar(s) }, wrong: others.map(x => ({ svg: shapeSvgVar(x), why: `That one is ${an(x)}. ${FACT[x]}` })), hint: 'Think about which clues your shape has.', explain: FACT[s] });
+  if (t === 'clue') {
+    const clues = {
+      square: 'I have 4 equal sides and 4 right angles.', rectangle: 'I have 4 right angles. My opposite sides are equal, but my sides are not all equal.',
+      rhombus: 'I have 4 equal sides, but my corners are not square.', parallelogram: 'My opposite sides are parallel and equal. My corners are not square, and my sides are not all equal.',
+      trapezoid: 'I have 4 sides. Only my top and bottom are parallel.'
+    };
+    return mk({ prompt: clues[s] + ' What am I?', correct: cap(s), wrong: QUADS.filter(x => x !== s).map(x => ({ label: cap(x), why: `Not ${an(x)}. ${FACT[x]}` })), hint: 'Use the clues one at a time. Cross out shapes that do not match.', explain: FACT[s] });
+  }
+  const facts = [
+    ['How many sides does every quadrilateral have?', '4', ['3', '5', '6'], 'Quad means 4. A quadrilateral is any shape with 4 sides.'],
+    ['True or false: Every square is also a rectangle.', 'True', ['False'], 'A square has 4 right angles, so it is a special kind of rectangle.'],
+    ['True or false: Every rectangle is also a square.', 'False', ['True'], 'A rectangle can have long and short sides. A square needs all 4 sides equal.'],
+    ['Which shape has opposite sides parallel but slanted corners?', 'Parallelogram', ['Square', 'Rectangle', 'Triangle'], FACT.parallelogram]
+  ];
+  const f = pick(facts); const isTF = f[0].startsWith('True');
+  return isTF ? tf(f[0], f[1] === 'True', 'Think about what makes each shape special.', f[3]) : mk({ prompt: f[0], correct: f[1], wrong: f[2], hint: 'Quad means four.', explain: f[3] });
+}
+function cardsQuads() {
+  return [
+    { v: shapeSvg('square'), t: 'Square', d: '4 equal sides and 4 right angles.' },
+    { v: shapeSvg('rectangle'), t: 'Rectangle', d: '4 right angles. Opposite sides are equal. A square is a special rectangle.' },
+    { v: shapeSvg('rhombus'), t: 'Rhombus', d: '4 equal sides. Opposite sides are parallel. Corners are not square.' },
+    { v: shapeSvg('parallelogram'), t: 'Parallelogram', d: 'Opposite sides are parallel and equal. Corners are slanted.' },
+    { v: shapeSvg('trapezoid'), t: 'Trapezoid', d: '4 sides. One pair of parallel sides: the top and the bottom.' },
+    { v: shapeSvg('kite'), t: 'Kite', d: '4 sides. Two short sides side by side, and two long sides side by side.' }
+  ];
+}
+
+/* ---------- labelled drawings (perimeter, area) ---------- */
+function rectLabelSvg(l, w, lab, fill) {
+  const s = Math.min(120 / l, 70 / w), rw = l * s, rh = w * s, x0 = (200 - rw) / 2, y0 = (140 - rh) / 2;
+  let r = `<rect x="${f1(x0)}" y="${f1(y0)}" width="${f1(rw)}" height="${f1(rh)}" fill="${fill || lighten(pick(COLORS), .4)}" stroke="${STROKE}" stroke-width="3"/>`;
+  if (lab.top) r += text(x0 + rw / 2, y0 - 11, lab.top, { s: 14 });
+  if (lab.bottom) r += text(x0 + rw / 2, y0 + rh + 12, lab.bottom, { s: 14 });
+  if (lab.left) r += text(x0 - 8, y0 + rh / 2, lab.left, { s: 14, a: 'end' });
+  if (lab.right) r += text(x0 + rw + 8, y0 + rh / 2, lab.right, { s: 14, a: 'start', c: lab.right === '?' ? ACCENT : INK });
+  return svg(200, 140, r);
+}
+function polyLabelSvg(pts, labels, fill, vb) {
+  const c = centroid(pts); let s = poly(pts, fill || lighten(pick(COLORS), .4));
+  pts.forEach((p, i) => { const q = pts[(i + 1) % pts.length], m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2], u = unit(m[0] - c[0], m[1] - c[1]); s += text(m[0] + u[0] * 15, m[1] + u[1] * 15, labels[i], { s: 14, c: labels[i] === '?' ? ACCENT : INK }); });
+  return svg(0, 0, s, vb || '-20 -10 200 150');
+}
+
+/* ---------- Skill 7: Perimeter ---------- */
+function genPerimeter(d) {
+  const u = pick(['cm', 'in', 'm', 'ft']), t = pick(d === 0 ? ['rect4', 'sq', 'rect4'] : d === 1 ? ['rect2', 'sq', 'tri', 'rect2'] : ['miss', 'poly', 'rect2', 'tri', 'sqmiss']);
+  const L = n => `${n} ${u}`;
+  const hint = 'Perimeter is the distance AROUND a shape. Add up every side.';
+  if (t === 'rect4') {
+    const l = rnd(2, 8), w = rnd(2, 6), P = 2 * (l + w);
+    return mk({ prompt: 'What is the perimeter of this rectangle?', visual: rectLabelSvg(l, w, { top: l, bottom: l, left: w, right: w }), correct: L(P), wrong: nums(P, [l * w, l + w, l + w + l], 2).map(L), hint, explain: `Add all 4 sides: ${l} + ${w} + ${l} + ${w} = ${P} ${u}.` });
+  }
+  if (t === 'sq') {
+    const s = rnd(2, 9), P = 4 * s;
+    return mk({ prompt: 'What is the perimeter of this square?', visual: rectLabelSvg(s, s, d === 0 ? { top: s, bottom: s, left: s, right: s } : { top: s }), correct: L(P), wrong: nums(P, [s * s, 2 * s, 3 * s], 2).map(L), hint: 'A square has 4 equal sides.', explain: `A square has 4 equal sides: ${s} + ${s} + ${s} + ${s} = ${P} ${u}. (Or 4 × ${s} = ${P}.)` });
+  }
+  if (t === 'rect2') {
+    const l = rnd(4, 12), w = rnd(2, 9), P = 2 * (l + w);
+    return mk({ prompt: 'What is the perimeter of this rectangle?', visual: rectLabelSvg(l, w, { top: l, right: w }), correct: L(P), wrong: nums(P, [l * w, l + w, l + l + w], 2).map(L), hint: 'A rectangle has 2 long sides and 2 short sides. The sides you cannot see are the same as the ones across from them.', explain: `The missing sides match: ${l} + ${w} + ${l} + ${w} = ${P} ${u}. Or 2 × (${l} + ${w}) = ${P}.` });
+  }
+  if (t === 'tri') {
+    const a = rnd(3, 9), b = rnd(3, 9), c = rnd(Math.abs(a - b) + 1, Math.min(a + b - 1, 10)), P = a + b + c;
+    return mk({ prompt: 'What is the perimeter of this triangle?', visual: polyLabelSvg(POLYS.triangle, [a, b, c]), correct: L(P), wrong: nums(P, [a + b, b + c, a * b], 3).map(L), hint, explain: `Add the 3 sides: ${a} + ${b} + ${c} = ${P} ${u}.` });
+  }
+  if (t === 'poly') {
+    const n = pick([5, 6]), sd = Array.from({ length: n }, () => rnd(2, 9)), P = sd.reduce((a, b) => a + b, 0);
+    return mk({ prompt: 'What is the perimeter of this shape?', visual: polyLabelSvg(regPts(n, 60, 62, 48, n === 5 ? -90 : 0), sd), correct: L(P), wrong: nums(P, [P - sd[0], P + sd[1], P - 1], 5).map(L), hint: 'Add EVERY side. Check them off as you go.', explain: `Add all ${n} sides: ${sd.join(' + ')} = ${P} ${u}.` });
+  }
+  if (t === 'miss') {
+    const l = rnd(4, 12), w = rnd(2, 8), P = 2 * (l + w);
+    return mk({ prompt: `A rectangle has a perimeter of ${P} ${u}. One side is ${l} ${u}. How long is the side marked ?`, visual: rectLabelSvg(l, w, { top: l, right: '?' }), correct: L(w), wrong: nums(w, [P - l, P / 2, l], 1).map(L), hint: 'Two lengths plus two widths make the perimeter. Take away the two lengths first.', explain: `Two lengths = ${l} + ${l} = ${2 * l}. ${P} − ${2 * l} = ${2 * w}. That is two widths, so one width = ${w} ${u}.` });
+  }
+  const s = rnd(3, 12), P = 4 * s;
+  return mk({ prompt: `A square has a perimeter of ${P} ${u}. How long is one side?`, correct: L(s), wrong: nums(s, [P / 2, P - 4, P - s], 1).map(L), hint: 'A square has 4 equal sides. Share the perimeter between them.', explain: `${P} ÷ 4 = ${s}. Each side is ${s} ${u}.` });
+}
+function cardsPerimeter() {
+  return [
+    { v: rectLabelSvg(6, 4, { top: 6, bottom: 6, left: 4, right: 4 }, '#e3f2fd'), q: 'Perimeter of this rectangle?', t: '6 + 4 + 6 + 4 = 20', d: 'Perimeter is the distance around the outside of a shape. Add up all the sides.' },
+    { v: rectLabelSvg(5, 5, { top: 5 }, '#fff3e0'), q: 'Perimeter of a square with side 5?', t: '4 × 5 = 20', d: 'A square has 4 equal sides, so multiply the side by 4.' },
+    { v: rectLabelSvg(8, 3, { top: 8, right: 3 }, '#f1f8e9'), q: 'Only 2 sides are shown. Perimeter?', t: '2 × (8 + 3) = 22', d: 'Opposite sides of a rectangle are equal. Add length + width, then double it.' }
+  ];
+}
+
+/* ---------- Skill 8: Area ---------- */
+function gridSvg(w, h) {
+  const u = Math.min(34, 220 / w, 120 / h), ww = w * u, hh = h * u, x0 = (240 - ww) / 2, y0 = (140 - hh) / 2, col = lighten(pick(COLORS), .5);
+  let s = `<rect x="${f1(x0)}" y="${f1(y0)}" width="${f1(ww)}" height="${f1(hh)}" fill="${col}"/>`;
+  for (let i = 0; i <= w; i++) s += line(x0 + i * u, y0, x0 + i * u, y0 + hh, { w: 1.6 });
+  for (let j = 0; j <= h; j++) s += line(x0, y0 + j * u, x0 + ww, y0 + j * u, { w: 1.6 });
+  s += `<rect x="${f1(x0)}" y="${f1(y0)}" width="${f1(ww)}" height="${f1(hh)}" fill="none" stroke="${STROKE}" stroke-width="3"/>`;
+  return svg(240, 140, s);
+}
+function lShapeSvg(W, H, w, h) {
+  const u = Math.min(150 / W, 100 / H), x0 = (240 - W * u) / 2, y0 = (150 - H * u) / 2;
+  const X = x => x0 + x * u, Y = y => y0 + y * u;
+  const pts = [[X(0), Y(0)], [X(W - w), Y(0)], [X(W - w), Y(h)], [X(W), Y(h)], [X(W), Y(H)], [X(0), Y(H)]];
+  let s = poly(pts, lighten(pick(COLORS), .4));
+  s += text(X(0) - 8, Y(H / 2), H, { a: 'end', s: 14 }) + text(X(W / 2), Y(H) + 13, W, { s: 14 });
+  s += text(X((W - w) / 2), Y(0) - 11, W - w, { s: 14 }) + text(X(W) + 8, Y((H + h) / 2), H - h, { a: 'start', s: 14 });
+  s += text(X(W - w) - 6, Y(h / 2), h, { a: 'end', s: 13, c: ACCENT }) + text(X(W - w / 2), Y(h) - 9, w, { s: 13, c: ACCENT });
+  return svg(240, 150, s);
+}
+function genArea(d) {
+  const u = pick(['cm', 'in', 'm', 'ft']), t = pick(d === 0 ? ['grid', 'grid', 'rect'] : d === 1 ? ['grid', 'rect', 'sq', 'rect'] : ['L', 'miss', 'rect', 'L', 'sqmiss']);
+  const A = n => `${n} square ${u}`; const hint = 'Area is how many squares cover the inside of a shape.';
+  if (t === 'grid') {
+    const w = rnd(2, d === 0 ? 5 : 7), h = rnd(2, d === 0 ? 3 : 5), a = w * h;
+    return mk({ prompt: 'How many squares cover this rectangle?', visual: gridSvg(w, h), correct: a, wrong: nums(a, [w + h, 2 * (w + h), a + w, a - h], 2), hint: 'Count the squares in one row, then count the rows.', explain: `There are ${h} rows with ${w} squares in each row. ${h} × ${w} = ${a} square units.` });
+  }
+  if (t === 'rect') {
+    const l = rnd(3, 12), w = rnd(2, 9), a = l * w;
+    return mk({ prompt: 'What is the area of this rectangle?', visual: rectLabelSvg(l, w, { top: l, right: w }), correct: A(a), wrong: nums(a, [2 * (l + w), l + w, a + l, a - w], 4).map(A), hint, explain: `Area of a rectangle = length × width. ${l} × ${w} = ${a} square ${u}.` });
+  }
+  if (t === 'sq') {
+    const s = rnd(3, 11), a = s * s;
+    return mk({ prompt: 'What is the area of this square?', visual: rectLabelSvg(s, s, { top: s }), correct: A(a), wrong: nums(a, [4 * s, 2 * s, a + s], 4).map(A), hint: 'A square has equal sides. Multiply the side by itself.', explain: `${s} × ${s} = ${a} square ${u}.` });
+  }
+  if (t === 'L') {
+    const W = rnd(6, 9), H = rnd(5, 7), w = rnd(2, 3), h = rnd(2, 3), a = W * H - w * h;
+    return mk({ prompt: 'What is the area of this L-shaped figure?', visual: lShapeSvg(W, H, w, h), correct: A(a), wrong: nums(a, [W * H, W * H + w * h, (W - w) * h + w * H, (W + H) * 2], 10).map(A), hint: 'Pretend it is a big rectangle, then take away the missing corner. Or cut it into two rectangles.', explain: `Big rectangle: ${W} × ${H} = ${W * H}. Missing corner: ${w} × ${h} = ${w * h}. ${W * H} − ${w * h} = ${a} square ${u}.` });
+  }
+  if (t === 'miss') {
+    const l = rnd(4, 12), w = rnd(2, 9), a = l * w;
+    return mk({ prompt: `A rectangle has an area of ${a} square ${u}. Its length is ${l} ${u}. What is its width?`, visual: rectLabelSvg(l, w, { top: l, right: '?' }), correct: `${w} ${u}`, wrong: nums(w, [a - l, l, a / 2], 1).map(n => `${n} ${u}`), hint: 'Area = length × width, so width = area ÷ length.', explain: `${a} ÷ ${l} = ${w}. The width is ${w} ${u}, because ${l} × ${w} = ${a}.` });
+  }
+  const s = rnd(3, 12), a = s * s;
+  return mk({ prompt: `A square has an area of ${a} square ${u}. How long is one side?`, correct: `${s} ${u}`, wrong: nums(s, [a / 4, a / 2, a - 4], 1).map(n => `${n} ${u}`), hint: 'Which number times itself makes the area?', explain: `${s} × ${s} = ${a}, so each side is ${s} ${u}.` });
+}
+function cardsArea() {
+  return [
+    { v: gridSvg(5, 3), q: 'How many squares cover this?', t: '3 rows × 5 = 15', d: 'Area is the number of square units that cover a shape. Count rows × columns.' },
+    { v: rectLabelSvg(7, 4, { top: 7, right: 4 }, '#e8f5e9'), q: 'Area of a 7 by 4 rectangle?', t: '7 × 4 = 28 square units', d: 'Area of a rectangle = length × width.' },
+    { v: lShapeSvg(8, 6, 3, 2), q: 'How do you find the area of an L-shape?', t: '8 × 6 − 3 × 2 = 42', d: 'Make a big rectangle, then subtract the missing corner. Or split into two rectangles and add.' },
+    { v: rectLabelSvg(6, 3, { top: 6, right: 3 }, '#fff8e1'), q: 'Area or perimeter?', t: 'Area is INSIDE, perimeter is AROUND', d: 'Area is measured in square units (cm²). Perimeter is measured in plain units (cm).' }
+  ];
+}
+
+/* ---------- Skill 9: Lines ---------- */
+function lineSvg(kind, o = {}) {
+  const th = o.th !== undefined ? o.th : rnd(0, 179), d = [Math.cos(rad(th)), Math.sin(rad(th))], n = [-d[1], d[0]], c = [100, 65], H = 52;
+  const A = (k, off) => [c[0] + d[0] * k + n[0] * (off || 0), c[1] + d[1] * k + n[1] * (off || 0)];
+  let s = '';
+  if (kind === 'point') s = dot(c[0], c[1], 7) + text(c[0] + 14, c[1] - 12, 'A', { s: 16 });
+  if (kind === 'segment') { const a = A(-H), b = A(H); s = line(a[0], a[1], b[0], b[1], { w: 4 }) + dot(a[0], a[1], 6) + dot(b[0], b[1], 6); }
+  if (kind === 'ray') { const a = A(-H + 4), b = A(H); s = line(a[0], a[1], b[0], b[1], { w: 4 }) + dot(a[0], a[1], 6) + arrowHead(b[0], b[1], th); }
+  if (kind === 'line') { const a = A(-H), b = A(H); s = line(a[0], a[1], b[0], b[1], { w: 4 }) + arrowHead(a[0], a[1], th + 180) + arrowHead(b[0], b[1], th); }
+  if (kind === 'parallel') { const a = A(-H, -20), b = A(H, -20), c2 = A(-H, 20), e = A(H, 20); s = line(a[0], a[1], b[0], b[1], { w: 4, c: '#3b6df2' }) + line(c2[0], c2[1], e[0], e[1], { w: 4, c: '#e5574b' }); }
+  if (kind === 'perp' || kind === 'cross') {
+    const ph = kind === 'perp' ? 90 : o.phi; const d2 = [Math.cos(rad(th + ph)), Math.sin(rad(th + ph))];
+    const a = A(-H), b = A(H), c2 = [c[0] - d2[0] * H, c[1] - d2[1] * H], e = [c[0] + d2[0] * H, c[1] + d2[1] * H];
+    s = line(a[0], a[1], b[0], b[1], { w: 4, c: '#3b6df2' }) + line(c2[0], c2[1], e[0], e[1], { w: 4, c: '#e5574b' });
+    if (kind === 'perp' && o.mark) s += rightMark(c, [c[0] + d[0] * 20, c[1] + d[1] * 20], [c[0] + d2[0] * 20, c[1] + d2[1] * 20], 13);
+  }
+  return svg(200, 130, s);
+}
+function genLines(d) {
+  const t = pick(d === 0 ? ['kind', 'kind', 'rel'] : d === 1 ? ['kind', 'rel', 'rel'] : ['rel', 'rel', 'real', 'kind']);
+  if (t === 'kind') {
+    const k = pick(['point', 'segment', 'ray', 'line']);
+    const info = { point: 'A point is an exact spot. It has no size.', segment: 'A line segment has two endpoints. You can measure it.', ray: 'A ray has one endpoint and goes on forever in one direction (arrow on one end).', line: 'A line goes on forever in both directions (arrows on both ends).' };
+    return mk({ prompt: 'What is this called?', visual: lineSvg(k), correct: cap(k === 'segment' ? 'line segment' : k), wrong: ['point', 'line segment', 'ray', 'line'].filter(x => x !== (k === 'segment' ? 'line segment' : k)).map(x => ({ label: cap(x), why: `Not a ${x}. ` + info[x === 'line segment' ? 'segment' : x] })), hint: 'Look at the ends. Dots mean it stops. Arrows mean it keeps going.', explain: info[k] });
+  }
+  if (t === 'rel') {
+    const k = pick(['parallel', 'perp', 'cross']), phi = pick([35, 45, 55, 125, 135, 145]);
+    const labels = { parallel: 'Parallel', perp: 'Perpendicular', cross: 'Intersecting (not perpendicular)' };
+    const why = { parallel: 'Parallel lines stay the same distance apart and never touch.', perp: 'Perpendicular lines cross to make a right angle (a square corner).', cross: 'Intersecting lines cross each other. If they do not make a square corner, they are just intersecting.' };
+    return mk({ prompt: 'How are these two lines related?', visual: lineSvg(k, { phi, mark: d === 0 }), correct: labels[k], wrong: Object.keys(labels).filter(x => x !== k).map(x => ({ label: labels[x], why: `Not ${labels[x].toLowerCase()}. ${why[x]}` })), hint: 'Do they ever touch? If they cross, do they make a square corner?', explain: why[k], n: 3 });
+  }
+  const reals = [
+    ['Railroad tracks are an example of…', 'Parallel lines', ['Perpendicular lines', 'A ray', 'A point'], 'The two rails stay the same distance apart forever, so they are parallel.'],
+    ['The corner of a piece of paper shows two lines that are…', 'Perpendicular', ['Parallel', 'Not touching', 'A ray'], 'A paper corner is a right angle, so its sides are perpendicular.'],
+    ['The beam of a flashlight is most like a…', 'Ray', ['Line segment', 'Point', 'Parallel line'], 'A flashlight beam starts at one point and goes on in one direction, like a ray.'],
+    ['Opposite sides of a rectangle are…', 'Parallel', ['Perpendicular', 'Not equal', 'Rays'], 'Opposite sides of a rectangle never meet, so they are parallel.']
+  ];
+  const r = pick(reals); return mk({ prompt: r[0], correct: r[1], wrong: r[2], hint: 'Picture the real thing.', explain: r[3] });
+}
+function cardsLines() {
+  return [
+    { v: lineSvg('point', { th: 0 }), t: 'Point', d: 'An exact spot. No size.' },
+    { v: lineSvg('segment', { th: 20 }), t: 'Line segment', d: 'A straight path with 2 endpoints. It can be measured.' },
+    { v: lineSvg('ray', { th: 20 }), t: 'Ray', d: 'One endpoint. Goes on forever in one direction.' },
+    { v: lineSvg('line', { th: 20 }), t: 'Line', d: 'Goes on forever in both directions.' },
+    { v: lineSvg('parallel', { th: 15 }), t: 'Parallel lines', d: 'Always the same distance apart. They never touch.' },
+    { v: lineSvg('perp', { th: 20, mark: true }), t: 'Perpendicular lines', d: 'They cross to make a right angle (90°).' },
+    { v: lineSvg('cross', { th: 20, phi: 50 }), t: 'Intersecting lines', d: 'They cross at a point. Perpendicular lines are a special kind of intersecting lines.' }
+  ];
+}
+
+/* ---------- Skill 10: Triangles ---------- */
+function triSvg(A, B, C, o = {}) {
+  let V = [[0, 0], [Math.sin(rad(C)), 0], [Math.sin(rad(B)) * Math.cos(rad(A)), -Math.sin(rad(B)) * Math.sin(rad(A))]];
+  if (o.flip) V = V.map(p => [-p[0], p[1]]);
+  if (o.rot) { const t = rad(o.rot); V = V.map(p => [p[0] * Math.cos(t) - p[1] * Math.sin(t), p[0] * Math.sin(t) + p[1] * Math.cos(t)]); }
+  const xs = V.map(p => p[0]), ys = V.map(p => p[1]), minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+  const W = 140, H = 110, pad = o.labels ? 16 : 14, s = Math.min((W - 2 * pad) / (maxx - minx), (H - 2 * pad) / (maxy - miny));
+  V = V.map(p => [(p[0] - minx) * s + (W - (maxx - minx) * s) / 2, (p[1] - miny) * s + (H - (maxy - miny) * s) / 2]);
+  let out = poly(V, o.fill || lighten(pick(COLORS), .35)); const angs = [A, B, C];
+  if (o.marks !== false) angs.forEach((a, i) => { if (a === 90) out += rightMark(V[i], V[(i + 1) % 3], V[(i + 2) % 3], 12); });
+  if (o.ticks) o.ticks.forEach((n, i) => {
+    const a = V[(i + 1) % 3], b = V[(i + 2) % 3], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], dd = unit(b[0] - a[0], b[1] - a[1]), nn = [-dd[1], dd[0]];
+    for (let k = 0; k < n; k++) { const off = (k - (n - 1) / 2) * 5; out += line(m[0] + dd[0] * off + nn[0] * 6, m[1] + dd[1] * off + nn[1] * 6, m[0] + dd[0] * off - nn[0] * 6, m[1] + dd[1] * off - nn[1] * 6, { w: 2.5, c: ACCENT }); }
+  });
+  if (o.labels) { const g = centroid(V); o.labels.forEach((lb, i) => { if (lb === null || lb === undefined) return; out += text(V[i][0] + (g[0] - V[i][0]) * .5, V[i][1] + (g[1] - V[i][1]) * .5, lb, { s: 12, c: lb === '?' ? ACCENT : INK }); }); }
+  return svg(W, H, out);
+}
+const triClass = a => a.some(x => x === 90) ? 'right' : a.some(x => x > 90) ? 'obtuse' : 'acute';
+const triSide = a => { const s = new Set(a).size; return s === 1 ? 'equilateral' : s === 2 ? 'isosceles' : 'scalene'; };
+const triTicks = a => { const s = new Set(a).size; if (s === 1) return [1, 1, 1]; if (s === 3) return [1, 2, 3]; const cnt = {}; a.forEach(x => cnt[x] = (cnt[x] || 0) + 1); return a.map(x => cnt[x] === 2 ? 1 : 0); };
+const TRI_FACT = {
+  acute: 'An acute triangle has 3 acute angles. All of its angles are smaller than 90°.',
+  right: 'A right triangle has one right angle (exactly 90°, a square corner).',
+  obtuse: 'An obtuse triangle has one obtuse angle (wider than 90°). The other two angles are small.',
+  equilateral: 'An equilateral triangle has 3 equal sides and 3 equal angles (60° each).',
+  isosceles: 'An isosceles triangle has at least 2 equal sides. The angles across from them are equal too.',
+  scalene: 'A scalene triangle has 3 sides that are all different lengths.'
+};
+function triOf(cls) {
+  let a;
+  if (cls === 'acute') { do { a = [rnd(45, 80), rnd(45, 80)]; a.push(180 - a[0] - a[1]); } while (a[2] < 35 || a[2] > 85); }
+  else if (cls === 'right') { const x = pick([30, 35, 40, 50, 55, 60]); a = [90, x, 90 - x]; }
+  else { const o = rnd(100, 135), b = rnd(18, 180 - o - 18); a = [o, b, 180 - o - b]; }
+  return shuffle(a);
+}
+function triBySide(kind) {
+  let a;
+  if (kind === 'equilateral') a = [60, 60, 60];
+  else if (kind === 'isosceles') { const x = pick([40, 50, 55, 65, 70, 75]); a = [x, x, 180 - 2 * x]; }
+  else { do { a = [rnd(30, 100), rnd(30, 100)]; a.push(180 - a[0] - a[1]); } while (a[2] < 25 || new Set(a).size < 3 || Math.min(Math.abs(a[0] - a[1]), Math.abs(a[1] - a[2]), Math.abs(a[0] - a[2])) < 12); }
+  return shuffle(a);
+}
+const triPic = (a, o = {}) => triSvg(a[0], a[1], a[2], { flip: Math.random() < .5, rot: o.rot !== undefined ? o.rot : pick([0, 0, 0, 90, 180]), ...o });
+function genTriangles(d) {
+  const t = pick(d === 0 ? ['byAngle', 'bySide', 'byAngle'] : d === 1 ? ['byAngle', 'bySide', 'angNum', 'sideNum', 'which'] : ['angNum', 'sideNum', 'which', 'tf', 'combo', 'combo']);
+  if (t === 'byAngle') {
+    const c = pick(['acute', 'right', 'obtuse']);
+    return mk({ prompt: 'Look at the angles. What kind of triangle is this?', visual: triPic(triOf(c)), correct: cap(c), wrong: ['acute', 'right', 'obtuse'].filter(x => x !== c).map(x => ({ label: cap(x), why: `Not ${x}. ${TRI_FACT[x]}` })), hint: 'Find the biggest angle. Is it a square corner, wider than a square corner, or smaller?', explain: TRI_FACT[c], n: 3 });
+  }
+  if (t === 'bySide') {
+    const k = pick(['equilateral', 'isosceles', 'scalene']), a = triBySide(k);
+    return mk({ prompt: 'The tick marks show sides that are equal. What kind of triangle is this?', visual: triPic(a, { ticks: triTicks(a), marks: false }), correct: cap(k), wrong: ['equilateral', 'isosceles', 'scalene'].filter(x => x !== k).map(x => ({ label: cap(x), why: `Not ${x}. ${TRI_FACT[x]}` })), hint: 'Matching tick marks mean the sides are the same length. Count how many sides match.', explain: TRI_FACT[k], n: 3 });
+  }
+  if (t === 'angNum') {
+    const c = pick(['acute', 'right', 'obtuse']), a = triOf(c);
+    return mk({ prompt: `A triangle has angles of ${a.map(x => x + '°').join(', ')}. By its angles, it is…`, correct: cap(c), wrong: ['acute', 'right', 'obtuse'].filter(x => x !== c).map(x => ({ label: cap(x), why: `Not ${x}. ${TRI_FACT[x]}` })), hint: 'Look for the biggest angle. Is it 90°, over 90°, or are they all under 90°?', explain: `${TRI_FACT[c]} Here the angles are ${a.join('°, ')}°.`, n: 3 });
+  }
+  if (t === 'sideNum') {
+    const k = pick(['equilateral', 'isosceles', 'scalene']); let s;
+    if (k === 'equilateral') { const v = rnd(3, 9); s = [v, v, v]; } else if (k === 'isosceles') { const v = rnd(4, 9); let b; do { b = rnd(2, 2 * v - 1); } while (b === v); s = shuffle([v, v, b]); } else { do { s = [rnd(3, 10), rnd(3, 10), rnd(3, 10)]; } while (new Set(s).size < 3 || s.some((x, i) => x >= s[(i + 1) % 3] + s[(i + 2) % 3])); }
+    return mk({ prompt: `A triangle has sides of ${s.join(' cm, ')} cm. It is…`, correct: cap(k), wrong: ['equilateral', 'isosceles', 'scalene'].filter(x => x !== k).map(x => ({ label: cap(x), why: `Not ${x}. ${TRI_FACT[x]}` })), hint: 'Compare the side lengths. How many are the same?', explain: `${TRI_FACT[k]}`, n: 3 });
+  }
+  if (t === 'which') {
+    const c = pick(['acute', 'right', 'obtuse']);
+    return mk({ prompt: `Tap the ${c} triangle.`, correct: { svg: triPic(triOf(c)) }, wrong: ['acute', 'right', 'obtuse'].flatMap(x => x === c ? [] : [x]).concat([pick(['acute', 'right', 'obtuse'].filter(x => x !== c))]).map(x => ({ svg: triPic(triOf(x)), why: `That one is ${x}. ${TRI_FACT[x]}` })), hint: 'Check the biggest angle in each triangle.', explain: TRI_FACT[c] });
+  }
+  if (t === 'tf') {
+    const facts = [
+      ['A triangle can have two right angles.', false, 'Two right angles already make 180°, and a triangle only has 180° in total. No room for a third angle!'],
+      ['A triangle can have one obtuse angle.', true, 'Yes! One wide angle is fine. The other two angles share what is left.'],
+      ['A triangle can have two obtuse angles.', false, 'Two obtuse angles would add up to more than 180°, but triangle angles add up to exactly 180°.'],
+      ['The three angles of any triangle add up to 180°.', true, 'This is true for every triangle: the angles always add up to 180°.'],
+      ['An equilateral triangle has three equal angles.', true, 'All sides are equal, so all angles are equal. Each one is 60°.'],
+      ['A right triangle can also be isosceles.', true, 'Yes! A triangle with angles 90°, 45°, 45° is both right and isosceles.'],
+      ['An obtuse triangle has three obtuse angles.', false, 'An obtuse triangle has only ONE obtuse angle.']
+    ];
+    const f = pick(facts); return tf(f[0], f[1], 'Remember: the angles of a triangle always add up to 180°.', f[2]);
+  }
+  const COMBOS = [[90, 45, 45], [60, 60, 60], [100, 40, 40], [30, 60, 90], [50, 60, 70], [120, 30, 30], [110, 40, 30], [70, 70, 40]];
+  const names = a => `${triClass(a)} ${triSide(a)}`, a = pick(COMBOS), ar = shuffle(a);
+  const wr = COMBOS.filter(x => names(x) !== names(a)); const seenN = new Set();
+  const wc = shuffle(wr).filter(x => { if (seenN.has(names(x))) return false; seenN.add(names(x)); return true; });
+  return mk({ prompt: 'Name this triangle by its angles AND its sides.', visual: triPic(ar, { labels: ar.map(x => x + '°'), ticks: triTicks(ar) }), correct: cap(names(a)), wrong: wc.map(x => cap(names(x))), hint: 'First check the angles (acute, right, obtuse). Then check the tick marks (how many equal sides).', explain: `${TRI_FACT[triClass(a)]} ${TRI_FACT[triSide(a)]}` });
+}
+function cardsTriangles() {
+  const L = (a, o = {}) => triSvg(a[0], a[1], a[2], { rot: 0, ...o });
+  return [
+    { v: L([60, 70, 50]), t: 'Acute triangle', d: TRI_FACT.acute },
+    { v: L([90, 35, 55]), t: 'Right triangle', d: TRI_FACT.right },
+    { v: L([115, 30, 35]), t: 'Obtuse triangle', d: TRI_FACT.obtuse },
+    { v: L([60, 60, 60], { ticks: [1, 1, 1] }), t: 'Equilateral triangle', d: TRI_FACT.equilateral },
+    { v: L([70, 70, 40], { ticks: [1, 1, 0] }), t: 'Isosceles triangle', d: TRI_FACT.isosceles },
+    { v: L([40, 60, 80], { ticks: [1, 2, 3] }), t: 'Scalene triangle', d: TRI_FACT.scalene },
+    { v: L([50, 60, 70], { labels: ['50°', '60°', '70°'] }), q: 'What do the 3 angles of a triangle add up to?', t: '180°', d: 'Always! 50 + 60 + 70 = 180. This is true for every triangle.' }
+  ];
+}
+
+/* ---------- Skill 11: Symmetry ---------- */
+const reg = (n, rot) => regPts(n, 60, 62, 50, rot);
+const SYM = {
+  square: { pts: POLYS.square, lines: [[60, 14, 60, 106], [14, 60, 106, 60], [18, 18, 102, 102], [102, 18, 18, 102]], no: [[10, 40, 110, 80], [24, 96, 100, 24]] },
+  rectangle: { pts: POLYS.rectangle, lines: [[60, 22, 60, 98], [4, 60, 116, 60]], no: [[10, 32, 110, 88], [10, 88, 110, 32]] },
+  isosceles: { pts: [[60, 14], [104, 98], [16, 98]], lines: [[60, 8, 60, 106]], no: [[16, 98, 82, 56], [10, 70, 110, 70]] },
+  equilateral: { pts: reg(3, -90), lines: null, n: 3, rot: -90, no: [[10, 70, 110, 70]] },
+  parallelogram: { pts: POLYS.parallelogram, lines: [], no: [[60, 22, 60, 98], [4, 60, 116, 60], [38, 30, 82, 90]] },
+  rhombus: { pts: POLYS.rhombus, lines: [[60, 6, 60, 114], [8, 60, 112, 60]], no: [[24, 34, 96, 86]] },
+  kite: { pts: POLYS.kite, lines: [[60, 4, 60, 116]], no: [[14, 48, 106, 48]] },
+  scalene: { pts: [[22, 24], [22, 98], [104, 98]], lines: [], no: [[22, 24, 63, 98], [22, 98, 104, 98]] },
+  pentagon: { pts: reg(5, -90), lines: null, n: 5, rot: -90 },
+  hexagon: { pts: reg(6, 0), lines: null, n: 6, rot: 0 },
+  octagon: { pts: reg(8, -67.5), lines: null, n: 8, rot: -67.5 },
+  circle: { circle: true, lines: null, n: 99 }
+};
+function regLines(n, rot) { const out = []; for (let k = 0; k < n; k++) { const a = rad(rot + k * 180 / n); out.push([60 - 56 * Math.cos(a), 62 - 56 * Math.sin(a), 60 + 56 * Math.cos(a), 62 + 56 * Math.sin(a)]); } return out; }
+function symLines(k) { const S = SYM[k]; if (S.lines) return S.lines; if (S.circle) return [[60, 12, 60, 108], [12, 60, 108, 60], [26, 26, 94, 94], [94, 26, 26, 94]]; return regLines(S.n, S.rot); }
+const symCount = k => { const S = SYM[k]; return S.circle ? 99 : S.lines ? S.lines.length : S.n; };
+function symSvg(k, lines, fill) {
+  const S = SYM[k], f = fill || lighten(pick(COLORS), .35); let s = S.circle ? `<circle cx="60" cy="60" r="46" fill="${f}" stroke="${STROKE}" stroke-width="3"/>` : poly(S.pts, f);
+  (lines || []).forEach(l => { s += line(l[0], l[1], l[2], l[3], { w: 3, c: '#e5574b', dash: '7 5' }); });
+  return svg(120, 120, s);
+}
+const SYM_NAMES = { square: 'square', rectangle: 'rectangle', isosceles: 'isosceles triangle', equilateral: 'equilateral triangle', parallelogram: 'parallelogram', rhombus: 'rhombus', kite: 'kite', scalene: 'scalene right triangle', pentagon: 'regular pentagon', hexagon: 'regular hexagon', octagon: 'regular octagon', circle: 'circle' };
+function letterSvg(ch, yes) {
+  return svg(120, 120, `<text x="60" y="64" text-anchor="middle" dominant-baseline="central" font-size="96" font-weight="800" font-family="Arial,Helvetica,sans-serif" fill="${lighten('#4f7be8', .1)}" stroke="${STROKE}" stroke-width="2">${ch}</text>` + line(60, 4, 60, 116, { w: 3, c: '#e5574b', dash: '7 5' }));
+}
+function genSymmetry(d) {
+  const t = pick(d === 0 ? ['yn', 'yn', 'letter'] : d === 1 ? ['yn', 'count', 'letter', 'count'] : ['count', 'count', 'yn', 'letter']);
+  if (t === 'yn') {
+    const ks = d === 0 ? ['square', 'rectangle', 'isosceles'] : ['square', 'rectangle', 'isosceles', 'parallelogram', 'rhombus', 'kite', 'scalene'];
+    const k = pick(ks), S = SYM[k], yes = S.lines && S.lines.length && Math.random() < .5;
+    const ln = yes ? pick(S.lines) : pick(S.no);
+    return yesNo(k, ln, !!yes);
+  }
+  if (t === 'letter') {
+    const yes = pick(['A', 'H', 'M', 'T', 'U', 'V', 'W', 'Y']), no = pick(['F', 'G', 'J', 'L', 'P', 'R', 'S', 'Z', 'B', 'D']), isY = Math.random() < .5, ch = isY ? yes : no;
+    return mk({ prompt: 'Is the dashed line a line of symmetry for this letter?', visual: letterSvg(ch), correct: isY ? 'Yes' : 'No', wrong: [isY ? 'No' : 'Yes'], pos: isY ? 0 : 1, hint: 'Imagine folding the letter along the dashed line. Do the two sides match?', explain: isY ? `Yes! The left and right sides of ${ch} are mirror images.` : `No. The left and right sides of ${ch} do not match when folded.` });
+  }
+  const ks = d === 1 ? ['square', 'rectangle', 'equilateral', 'isosceles', 'parallelogram'] : ['pentagon', 'hexagon', 'circle', 'octagon', 'scalene', 'rhombus', 'kite', 'equilateral', 'square', 'parallelogram'];
+  const k = pick(ks), n = symCount(k), lab = n === 99 ? 'Too many to count' : String(n);
+  const wr = nums(n === 99 ? 4 : n, [0, 1, 2, 3, 4, 5, 6], 0).map(String); wr.push('Too many to count'); const w2 = wr.filter(x => x !== lab).filter(x => n === 99 ? x !== 'Too many to count' : true);
+  return mk({ prompt: `How many lines of symmetry does a ${SYM_NAMES[k]} have?`, visual: symSvg(k, []), correct: lab, wrong: n === 99 ? ['0', '1', '2', '4'] : w2.filter(x => x !== 'Too many to count'), hint: 'Imagine all the ways you could fold the shape so both halves match.', explain: n === 99 ? 'A circle can be folded along any line through its center, so it has too many lines of symmetry to count.' : `A ${SYM_NAMES[k]} has ${n === 0 ? 'no' : n} line${n === 1 ? '' : 's'} of symmetry.`, solved: symSvg(k, symLines(k)) });
+}
+function yesNo(k, ln, isY) {
+  return mk({ prompt: `Is the dashed line a line of symmetry for this ${SYM_NAMES[k]}?`, visual: symSvg(k, [ln]), correct: isY ? 'Yes' : 'No', wrong: [isY ? 'No' : 'Yes'], pos: isY ? 0 : 1, hint: 'Imagine folding the shape on the dashed line. Do both halves match exactly?', explain: isY ? 'Yes! If you fold along this line, both halves match perfectly.' : 'No. If you fold along this line, the two halves do not match up.', solved: SYM[k].lines && SYM[k].lines.length ? symSvg(k, symLines(k)) : null });
+}
+function cardsSymmetry() {
+  return [
+    { v: symSvg('square', [[60, 14, 60, 106]]), q: 'What is a line of symmetry?', t: 'A fold line', d: 'If you fold the shape along the line, both halves match exactly.' },
+    { v: symSvg('square', symLines('square')), q: 'How many lines of symmetry does a square have?', t: '4', d: 'Up-down, side-to-side, and 2 diagonals.' },
+    { v: symSvg('rectangle', symLines('rectangle')), q: 'How many for a rectangle?', t: '2', d: 'Only up-down and side-to-side. The diagonals do NOT work!' },
+    { v: symSvg('equilateral', symLines('equilateral')), q: 'Equilateral triangle?', t: '3', d: 'One line from each corner to the middle of the opposite side.' },
+    { v: symSvg('parallelogram', []), q: 'Parallelogram?', t: '0', d: 'No fold line makes both halves match. It has no lines of symmetry.' },
+    { v: symSvg('circle', symLines('circle')), q: 'Circle?', t: 'Too many to count!', d: 'Any line through the center works.' }
+  ];
+}
+
+/* ---------- Skill 12: Measuring Angles ---------- */
+function protractorSvg(a) {
+  const cx = 100, cy = 100, R = 92; let s = `<path d="M${cx - R},${cy} A${R},${R} 0 0 1 ${cx + R},${cy} Z" fill="#e3f2fd" stroke="${STROKE}" stroke-width="2"/>`;
+  s += `<path d="M${cx - 38},${cy} A38,38 0 0 1 ${cx + 38},${cy}" fill="none" stroke="#90a4c0" stroke-width="1"/>`;
+  s += line(cx - R - 6, cy, cx + R + 6, cy, { w: 2 });
+  s += line(cx, cy, cx + 98 * Math.cos(rad(a)), cy - 98 * Math.sin(rad(a)), { w: 3, c: '#e5574b' }) + dot(cx, cy, 4);
+  const halo = 'stroke="#e3f2fd" stroke-width="2.5" paint-order="stroke"';
+  for (let k = 0; k <= 180; k += 10) {
+    const ca = Math.cos(rad(k)), sa = Math.sin(rad(k)), up = (k === 0 || k === 180) ? 6 : 0;
+    s += line(cx + R * ca, cy - R * sa, cx + (R - 7) * ca, cy - (R - 7) * sa, { w: 1.3 });
+    s += text(cx + 77 * ca, cy - 77 * sa - up, k, { s: 7.5 }).replace('<text ', `<text ${halo} `);
+    s += text(cx + 60 * ca, cy - 60 * sa - up, 180 - k, { s: 6.5, c: '#6c7c9c', b: false }).replace('<text ', `<text ${halo} `);
+  }
+  return svg(0, 0, s, '0 0 200 112');
+}
+function compSvg(a, supp) {
+  const cx = supp ? 100 : 40, cy = 104, L = 88; const P = (deg, l) => [cx + l * Math.cos(rad(deg)), cy - l * Math.sin(rad(deg))];
+  let s = '';
+  const arc = (r, d1, d2, col) => { const p = P(d1, r), q = P(d2, r); return `<path d="M${f1(p[0])},${f1(p[1])} A${r},${r} 0 0 0 ${f1(q[0])},${f1(q[1])}" fill="none" stroke="${col}" stroke-width="2.5"/>`; };
+  if (supp) { s += line(cx - 92, cy, cx + 92, cy, { w: 4 }); const p = P(a, L); s += line(cx, cy, p[0], p[1], { w: 4 }); s += arc(30, 0, a, ACCENT) + arc(40, a, 180, '#3b6df2'); const m = P(a / 2, 50), m2 = P((a + 180) / 2, 56); s += text(m[0], m[1], a + '°', { s: 14, c: ACCENT }) + text(m2[0], m2[1], '?', { s: 16, c: '#3b6df2' }); }
+  else { s += line(cx, cy, cx + L, cy, { w: 4 }) + line(cx, cy, cx, cy - L, { w: 4 }); const p = P(a, L); s += line(cx, cy, p[0], p[1], { w: 4 }); s += rightMark([cx, cy], [cx + 20, cy], [cx, cy - 20], 11, '#7a8aa8'); s += arc(36, 0, a, ACCENT) + arc(44, a, 90, '#3b6df2'); const m = P(a / 2, 58), m2 = P((a + 90) / 2, 64); s += text(m[0], m[1], a + '°', { s: 14, c: ACCENT }) + text(m2[0], m2[1], '?', { s: 16, c: '#3b6df2' }); }
+  return svg(200, 120, s);
+}
+function quadLabelSvg(labels) {
+  const pts = [[26, 28], [150, 14], [168, 96], [40, 104]], g = centroid(pts); let s = poly(pts, lighten(pick(COLORS), .4));
+  pts.forEach((p, i) => { s += text(p[0] + (g[0] - p[0]) * .3, p[1] + (g[1] - p[1]) * .3, labels[i], { s: 13, c: labels[i] === '?' ? ACCENT : INK }); });
+  return svg(190, 120, s);
+}
+function genAngleMeasure(d) {
+  const t = pick(d === 0 ? ['proto', 'proto'] : d === 1 ? ['proto', 'comp', 'proto'] : ['proto', 'comp', 'supp', 'tri', 'quad', 'tri']);
+  if (t === 'proto') {
+    const a = d === 0 ? pick([30, 45, 60, 120, 135, 150]) : d === 1 ? pick([20, 40, 50, 70, 80, 100, 110, 130, 140, 160]) : rnd(4, 34) * 5 === 90 ? 75 : rnd(4, 34) * 5;
+    return mk({ prompt: 'What is the measure of this angle? (One side starts at 0.)', visual: protractorSvg(a), correct: a + '°', wrong: nums(a, [180 - a, a + 10, a - 10, a + 5], 5).map(n => n + '°'), hint: 'Line one side up with 0. Read the number where the other side crosses. Use the scale that starts at 0!', explain: `The bottom side sits on 0 on the outside scale. The red side crosses ${a}. Check: ${a < 90 ? 'it is a small (acute) angle, so the number should be under 90' : 'it is a wide (obtuse) angle, so the number should be over 90'}.` });
+  }
+  if (t === 'comp') {
+    const a = pick([15, 20, 25, 30, 35, 40, 50, 55, 60, 65, 70]), r = 90 - a;
+    return mk({ prompt: `Two angles make a right angle (90°). One is ${a}°. What is the other angle?`, visual: compSvg(a, false), correct: r + '°', wrong: nums(r, [180 - a, a, 90 + a, 100 - a], 5).map(n => n + '°'), hint: 'A right angle is 90°. Take away the angle you know.', explain: `90 − ${a} = ${r}. Angles that add to 90° are called complementary.` });
+  }
+  if (t === 'supp') {
+    const a = pick([30, 40, 50, 60, 70, 80, 100, 110, 120, 130, 140, 150]), r = 180 - a;
+    return mk({ prompt: `Two angles on a straight line add up to 180°. One is ${a}°. What is the other angle?`, visual: compSvg(a, true), correct: r + '°', wrong: nums(r, [90 - a > 0 ? 90 - a : a + 10, a, 360 - a, 90 + a > 180 ? a + 20 : 90 + a], 5).map(n => n + '°'), hint: 'A straight line is 180°. Take away the angle you know.', explain: `180 − ${a} = ${r}. Angles that add to 180° are called supplementary.` });
+  }
+  if (t === 'tri') {
+    const A = rnd(30, 80), B = rnd(30, 80), C = 180 - A - B;
+    return mk({ prompt: 'What is the missing angle in this triangle?', visual: triPic([A, B, C], { labels: [A + '°', B + '°', '?'], marks: false, rot: 0 }), correct: C + '°', wrong: nums(C, [180 - A, 90 - A, 360 - A - B, A + B], 5).map(n => n + '°'), hint: 'The 3 angles of a triangle add up to 180°. Add the two you know, then subtract from 180.', explain: `${A} + ${B} = ${A + B}. 180 − ${A + B} = ${C}. The missing angle is ${C}°.` });
+  }
+  const a = pick([70, 80, 90, 100, 110]), b = pick([80, 90, 100, 110]), c = pick([60, 70, 90, 100, 120]), r = 360 - a - b - c;
+  return mk({ prompt: 'The 4 angles of any quadrilateral add up to 360°. What is the missing angle?', visual: quadLabelSvg([a + '°', b + '°', c + '°', '?']), correct: r + '°', wrong: nums(r, [180 - a - b - c > 0 ? 180 - a - b - c : r + 20, a + b + c, 360 - a - b, r + 10], 5).map(n => n + '°'), hint: 'Add the 3 angles you know. Then subtract from 360.', explain: `${a} + ${b} + ${c} = ${a + b + c}. 360 − ${a + b + c} = ${r}. The missing angle is ${r}°.` });
+}
+function cardsAngleMeasure() {
+  return [
+    { v: protractorSvg(55), q: 'How do you read a protractor?', t: 'Start at 0', d: 'Put the center on the corner of the angle. Line one side up with 0. Read the number where the other side crosses. Use the scale that starts at 0.' },
+    { v: compSvg(35, false), q: 'Complementary angles', t: 'Add up to 90°', d: 'Two angles that make a right angle. 35° + 55° = 90°.' },
+    { v: compSvg(60, true), q: 'Supplementary angles', t: 'Add up to 180°', d: 'Two angles that make a straight line. 60° + 120° = 180°.' },
+    { v: triPic([50, 60, 70], { labels: ['50°', '60°', '70°'], marks: false, rot: 0 }), q: 'The 3 angles of a triangle', t: 'Add up to 180°', d: '50 + 60 + 70 = 180. Use this to find a missing angle.' },
+    { v: quadLabelSvg(['90°', '90°', '90°', '90°']), q: 'The 4 angles of a quadrilateral', t: 'Add up to 360°', d: 'A rectangle has four 90° angles: 4 × 90 = 360.' }
+  ];
+}
+
+/* ---------- Skill 13: Shape Families ---------- */
+function genFamilies(d) {
+  const easy = [
+    ['Every square is also a rectangle.', true, 'A square has 4 right angles and opposite sides equal, so it is a special rectangle.', 'square'],
+    ['Every rectangle is also a square.', false, 'A rectangle can have long and short sides. A square needs all 4 sides equal.', 'rectangle'],
+    ['Every square is also a rhombus.', true, 'A rhombus has 4 equal sides. A square has 4 equal sides too.', 'square'],
+    ['Every rhombus is also a square.', false, 'A rhombus can have slanted corners. A square must have 4 right angles.', 'rhombus'],
+    ['Every rectangle is also a parallelogram.', true, 'A rectangle has two pairs of parallel sides, and that is what makes a parallelogram.', 'rectangle'],
+    ['Every parallelogram is also a rectangle.', false, 'A parallelogram can have slanted corners. A rectangle needs 4 right angles.', 'parallelogram'],
+    ['Every square is also a parallelogram.', true, 'A square has two pairs of parallel sides, so it is a parallelogram.', 'square'],
+    ['A circle is a polygon.', false, 'A polygon has only straight sides. A circle is curved.', 'circle'],
+    ['A pentagon is a quadrilateral.', false, 'A quadrilateral has exactly 4 sides. A pentagon has 5.', 'pentagon']
+  ];
+  const best = [
+    ['Which is the MOST exact name for a shape with 4 equal sides and 4 right angles?', 'Square', ['Quadrilateral', 'Parallelogram', 'Rectangle'], 'It has 4 sides (quadrilateral), parallel sides (parallelogram), and 4 right angles (rectangle), but 4 equal sides AND 4 right angles make it a square.'],
+    ['Which shape has 4 right angles but sides that are NOT all equal?', 'Rectangle', ['Square', 'Rhombus', 'Trapezoid'], 'Right angles make it a rectangle. If the sides were all equal it would be a square.'],
+    ['Which shape belongs to BOTH the rectangle family and the rhombus family?', 'Square', ['Parallelogram', 'Trapezoid', 'Kite'], 'A square has 4 right angles (rectangle) and 4 equal sides (rhombus).'],
+    ['All of these are quadrilaterals EXCEPT one. Which is not?', 'Hexagon', ['Square', 'Trapezoid', 'Rhombus'], 'A quadrilateral has exactly 4 sides. A hexagon has 6.'],
+    ['A shape has 4 equal sides and no right angles. What is the best name?', 'Rhombus', ['Square', 'Rectangle', 'Triangle'], 'Equal sides make it a rhombus. With no right angles it cannot be a square.'],
+    ['A quadrilateral has opposite sides parallel, but sides of different lengths and slanted corners. Best name?', 'Parallelogram', ['Square', 'Rhombus', 'Rectangle'], 'Opposite sides parallel makes it a parallelogram. Slanted corners and unequal sides rule out the others.'],
+    ['Which of these is NOT always a parallelogram?', 'Trapezoid', ['Rectangle', 'Rhombus', 'Square'], 'Rectangles, rhombuses and squares all have two pairs of parallel sides. A trapezoid has only one pair.']
+  ];
+  if (d === 0 || (d === 1 && Math.random() < .5) || Math.random() < .35) {
+    const f = pick(d === 0 ? easy.slice(0, 7) : easy);
+    return tf(f[0], f[1], 'Think about what each shape needs. Does this shape have everything the other one asks for?', f[2], f[3] === 'circle' || f[3] === 'pentagon' ? null : shapeSvg(f[3]));
+  }
+  const b = pick(best); return mk({ prompt: b[0], correct: b[1], wrong: b[2], hint: 'Check each clue one by one: equal sides? right angles? parallel sides?', explain: b[3] });
+}
+function cardsFamilies() {
+  return [
+    { v: shapeSvg('square'), q: 'Is a square a rectangle?', t: 'Yes!', d: 'A square has 4 right angles, so it is a special rectangle with all sides equal.' },
+    { v: shapeSvg('square', '#ffd54f'), q: 'Is a square a rhombus?', t: 'Yes!', d: 'A rhombus is any shape with 4 equal sides. A square has 4 equal sides.' },
+    { v: shapeSvg('rectangle'), q: 'Is every rectangle a parallelogram?', t: 'Yes!', d: 'A parallelogram has 2 pairs of parallel sides. So does a rectangle.' },
+    { v: shapeSvg('parallelogram'), q: 'Is every parallelogram a rectangle?', t: 'No!', d: 'Parallelograms can be slanted. A rectangle needs 4 right angles.' },
+    { v: shapeSvg('rhombus'), q: 'Is every rhombus a square?', t: 'No!', d: 'A rhombus can be slanted. A square needs 4 right angles.' },
+    { v: shapeSvg('trapezoid'), q: 'The family tree', t: 'Quadrilateral → Parallelogram → Rectangle / Rhombus → Square', d: 'Moving down the tree, the shapes get more special. A square is the most special.' }
+  ];
+}
+
+/* ---------- Skill 14: Volume ---------- */
+function prismSvg(l, w, h, o = {}) {
+  const u = Math.min(30, 160 / (l + w / 2), 90 / (h + w / 2)), totW = (l + w / 2) * u, totH = (h + w / 2) * u, ox = (240 - totW) / 2 + 4, oy = (160 - totH) / 2, yT = oy + w * .5 * u;
+  const dx = .5 * u, dy = -.5 * u, f = o.fill || pick(COLORS);
+  let s = poly([[ox, yT], [ox + l * u, yT], [ox + l * u, yT + h * u], [ox, yT + h * u]], lighten(f, .15)) +
+    poly([[ox, yT], [ox + l * u, yT], [ox + l * u + w * dx, yT + w * dy], [ox + w * dx, yT + w * dy]], lighten(f, .45)) +
+    poly([[ox + l * u, yT], [ox + l * u + w * dx, yT + w * dy], [ox + l * u + w * dx, yT + w * dy + h * u], [ox + l * u, yT + h * u]], darken(f, .12));
+  if (o.grid) {
+    const g = { w: 1.2 };
+    for (let i = 1; i < l; i++) { s += line(ox + i * u, yT, ox + i * u, yT + h * u, g) + line(ox + i * u, yT, ox + i * u + w * dx, yT + w * dy, g); }
+    for (let j = 1; j < h; j++) { s += line(ox, yT + j * u, ox + l * u, yT + j * u, g) + line(ox + l * u, yT + j * u, ox + l * u + w * dx, yT + j * u + w * dy, g); }
+    for (let k = 1; k < w; k++) { s += line(ox + k * dx, yT + k * dy, ox + l * u + k * dx, yT + k * dy, g) + line(ox + l * u + k * dx, yT + k * dy, ox + l * u + k * dx, yT + k * dy + h * u, g); }
+  }
+  if (o.labels) {
+    const [ll, ww, hh] = o.labels;
+    s += text(ox + l * u / 2, yT + h * u + 13, ll, { s: 14 }) + text(ox - 8, yT + h * u / 2, hh, { s: 14, a: 'end', c: hh === '?' ? ACCENT : INK }) + text(ox + l * u + w * dx / 2 + 12, yT + h * u + w * dy / 2 + 10, ww, { s: 14, a: 'start', c: ww === '?' ? ACCENT : INK });
+  }
+  return svg(240, 160, s);
+}
+function genVolume(d) {
+  const u = pick(['cm', 'in', 'm', 'ft']), V = n => `${n} cubic ${u}`, t = pick(d === 0 ? ['count', 'count', 'lab'] : d === 1 ? ['count', 'lab', 'lab', 'unit'] : ['miss', 'lab', 'cube', 'unit', 'miss']);
+  if (t === 'count') {
+    const l = rnd(2, 5), w = rnd(2, 3), h = rnd(2, 3), v = l * w * h;
+    return mk({ prompt: 'How many unit cubes fill this box?', visual: prismSvg(l, w, h, { grid: true }), correct: v, wrong: nums(v, [l + w + h, l * w, l * h + w * h, v + l], 3), hint: 'Count the cubes in the bottom layer (length × width). Then multiply by how many layers high.', explain: `Bottom layer: ${l} × ${w} = ${l * w} cubes. There are ${h} layers. ${l * w} × ${h} = ${v} cubes.` });
+  }
+  if (t === 'lab') {
+    const l = rnd(3, 9), w = rnd(2, 6), h = rnd(2, 6), v = l * w * h;
+    return mk({ prompt: 'What is the volume of this box?', visual: prismSvg(l, w, h, { labels: [l, w, h] }), correct: V(v), wrong: nums(v, [l + w + h, l * w, 2 * (l * w + w * h + l * h), v + l * w], 6).map(V), hint: 'Volume = length × width × height. Multiply all three numbers.', explain: `${l} × ${w} = ${l * w}. ${l * w} × ${h} = ${v}. The volume is ${v} cubic ${u}.` });
+  }
+  if (t === 'unit') {
+    const items = [['How much space is inside a box (its volume) measured in?', `cubic ${u}`, [`${u}`, `square ${u}`], 'Volume measures space inside, so it uses cubic units (3 dimensions).'], ['Which is the formula for the volume of a rectangular prism?', 'length × width × height', ['length + width + height', 'length × width', '2 × (length + width)'], 'Multiply all three measurements.'], ['A cube has sides of 3 cm. How many cubic cm is its volume?', '27', ['9', '12', '6'], '3 × 3 × 3 = 27 cubic cm.']];
+    const it = pick(items); return mk({ prompt: it[0], correct: it[1], wrong: it[2], hint: 'Volume uses 3 numbers multiplied together.', explain: it[3] });
+  }
+  if (t === 'cube') {
+    const s = rnd(2, 6), v = s * s * s;
+    return mk({ prompt: `A cube has sides of ${s} ${u}. What is its volume?`, visual: prismSvg(s, s, s, { labels: [s, s, s] }), correct: V(v), wrong: nums(v, [s * s, 3 * s, 6 * s * s, v + s], 6).map(V), hint: 'Every side of a cube is the same. Multiply the side three times.', explain: `${s} × ${s} × ${s} = ${v}. The volume is ${v} cubic ${u}.` });
+  }
+  const l = rnd(3, 8), w = rnd(2, 6), h = rnd(2, 5), v = l * w * h;
+  return mk({ prompt: `A box has a volume of ${v} cubic ${u}. Its length is ${l} ${u} and its width is ${w} ${u}. What is its height?`, visual: prismSvg(l, w, h, { labels: [l, w, '?'] }), correct: `${h} ${u}`, wrong: nums(h, [v / l, v - l - w, l + w, v / w], 1).map(n => `${n} ${u}`), hint: 'First find length × width. Then ask: what times that makes the volume?', explain: `${l} × ${w} = ${l * w}. ${v} ÷ ${l * w} = ${h}. The height is ${h} ${u}.` });
+}
+function cardsVolume() {
+  return [
+    { v: prismSvg(4, 3, 2, { grid: true }), q: 'What is volume?', t: 'Space inside a 3D shape', d: 'Volume tells how many unit cubes fit inside. It is measured in cubic units.' },
+    { v: prismSvg(4, 3, 2, { grid: true }), q: 'How many cubes? 4 long, 3 wide, 2 tall', t: '4 × 3 × 2 = 24', d: 'Bottom layer is 4 × 3 = 12 cubes. Two layers makes 24.' },
+    { v: prismSvg(5, 3, 4, { labels: [5, 3, 4] }), q: 'Volume formula', t: 'V = length × width × height', d: '5 × 3 × 4 = 60 cubic units.' },
+    { v: prismSvg(3, 3, 3, { grid: true }), q: 'Volume of a cube with side 3?', t: '3 × 3 × 3 = 27', d: 'Cubes have equal sides, so multiply the side by itself 3 times.' }
+  ];
+}
+
+/* ---------- Skill 15: Coordinate Grid ---------- */
+function gridPlane(points) {
+  const c = 26, ox = 30, oy = 232; let s = '';
+  for (let i = 0; i <= 8; i++) s += line(ox + i * c, oy, ox + i * c, oy - 8 * c, { w: 1, c: '#c9d3ea' }) + line(ox, oy - i * c, ox + 8 * c, oy - i * c, { w: 1, c: '#c9d3ea' });
+  s += line(ox, oy, ox + 8 * c + 8, oy, { w: 3 }) + line(ox, oy, ox, oy - 8 * c - 8, { w: 3 });
+  s += arrowHead(ox + 8 * c + 12, oy, 0) + arrowHead(ox, oy - 8 * c - 12, -90);
+  for (let i = 0; i <= 8; i++) { s += text(ox + i * c, oy + 14, i, { s: 11 }); if (i > 0) s += text(ox - 12, oy - i * c, i, { s: 11 }); }
+  points.forEach(p => { const x = ox + p.x * c, y = oy - p.y * c; s += dot(x, y, 6, p.c || '#e5574b') + text(x + 12, y - 11, p.n, { s: 14, c: INK }); });
+  return svg(0, 0, s, '0 0 262 262');
+}
+function genCoord(d) {
+  const t = pick(d === 0 ? ['which', 'read', 'which'] : d === 1 ? ['which', 'read', 'read'] : ['move', 'read', 'which', 'move']);
+  const names = ['A', 'B', 'C', 'D', 'E'];
+  function randPts(n) { const set = new Set(), out = []; while (out.length < n) { const x = rnd(1, 8), y = rnd(1, 8), k = x + ',' + y; if (set.has(k) || x === y) continue; set.add(k); out.push({ x, y, n: names[out.length] }); } return out; }
+  const hint = 'Start at 0. Go ACROSS first (x), then UP (y). Across, then up!';
+  if (t === 'read') {
+    const pts = randPts(4), p = pick(pts), fmt = q => `(${q.x}, ${q.y})`;
+    return mk({ prompt: `What are the coordinates of point ${p.n}?`, visual: gridPlane(pts), correct: fmt(p), wrong: [`(${p.y}, ${p.x})`, `(${p.x}, ${p.y + 1})`, `(${p.x + 1}, ${p.y})`, `(${Math.max(1, p.x - 1)}, ${p.y})`], hint, explain: `Go across ${p.x} on the x-axis, then up ${p.y}. The point is at (${p.x}, ${p.y}). The across number always comes first.` });
+  }
+  if (t === 'which') {
+    const pts = randPts(4), p = pick(pts);
+    return mk({ prompt: `Which point is at (${p.x}, ${p.y})?`, visual: gridPlane(pts), correct: `Point ${p.n}`, wrong: pts.filter(q => q !== p).map(q => ({ label: `Point ${q.n}`, why: `Point ${q.n} is at (${q.x}, ${q.y}).` })), hint, explain: `Go across ${p.x}, then up ${p.y}. That is point ${p.n}.` });
+  }
+  const x = rnd(1, 4), y = rnd(1, 4), r = rnd(1, 4), uu = rnd(1, 4), dir = pick(['right', 'up']);
+  const nx = x + r, ny = y + uu;
+  return mk({ prompt: `Start at (${x}, ${y}). Move ${r} to the right and ${uu} up. Where do you land?`, visual: gridPlane([{ x, y, n: 'Start', c: '#3b6df2' }]), correct: `(${nx}, ${ny})`, wrong: [`(${x + uu}, ${y + r})`, `(${nx}, ${y})`, `(${x}, ${ny})`, `(${nx + 1}, ${ny})`], hint: 'Moving right changes x. Moving up changes y.', explain: `Right ${r} means x: ${x} + ${r} = ${nx}. Up ${uu} means y: ${y} + ${uu} = ${ny}. You land at (${nx}, ${ny}).` });
+}
+function cardsCoord() {
+  return [
+    { v: gridPlane([{ x: 3, y: 5, n: 'A' }]), q: 'Where is A?', t: 'A is at (3, 5)', d: 'Go across 3, then up 5. The point is written (x, y).' },
+    { v: gridPlane([{ x: 0, y: 0, n: 'O', c: '#3b6df2' }]), q: 'The origin', t: '(0, 0)', d: 'Where the two axes meet. Everything starts here.' },
+    { v: gridPlane([{ x: 6, y: 2, n: 'B' }]), q: 'Which comes first?', t: 'Across, then up', d: 'The x-number (across) always comes first. The y-number (up) comes second. B is at (6, 2).' }
+  ];
+}
+
+/* ============================================================
+   Skill list: order = difficulty progression
+   ============================================================ */
+const SKILLS = [
+  { id: 'shapes', name: 'Name That Shape', grade: 'Grade 1', icon: '🔺', blurb: 'Circles, squares, triangles and more', gen: genShapes, cards: cardsShapes },
+  { id: 'sides', name: 'Sides & Corners', grade: 'Grade 1', icon: '🔢', blurb: 'Count the sides and corners', gen: genSides, cards: cardsSides },
+  { id: 'solids', name: '3D Shapes', grade: 'Grade 1–2', icon: '🧊', blurb: 'Cubes, spheres, cones and cylinders', gen: gen3D, cards: cards3D },
+  { id: 'fractions', name: 'Halves & Fourths', grade: 'Grade 1–2', icon: '🍕', blurb: 'Cutting shapes into equal parts', gen: genFractions, cards: cardsFractions },
+  { id: 'angles', name: 'Right, Acute & Obtuse', grade: 'Grade 2–3', icon: '📐', blurb: 'Learn all about angles', gen: genAngles, cards: cardsAngles },
+  { id: 'quads', name: 'Four-Sided Shapes', grade: 'Grade 3', icon: '◼️', blurb: 'Squares, rectangles, rhombuses and more', gen: genQuads, cards: cardsQuads },
+  { id: 'perimeter', name: 'Perimeter', grade: 'Grade 3', icon: '🚶', blurb: 'The distance around a shape', gen: genPerimeter, cards: cardsPerimeter },
+  { id: 'area', name: 'Area', grade: 'Grade 3–4', icon: '🟩', blurb: 'How many squares cover a shape', gen: genArea, cards: cardsArea },
+  { id: 'lines', name: 'Lines & Rays', grade: 'Grade 4', icon: '↗️', blurb: 'Parallel, perpendicular and more', gen: genLines, cards: cardsLines },
+  { id: 'triangles', name: 'Triangle Types', grade: 'Grade 4–5', icon: '🔻', blurb: 'Acute, right, obtuse, isosceles…', gen: genTriangles, cards: cardsTriangles },
+  { id: 'symmetry', name: 'Symmetry', grade: 'Grade 4', icon: '🦋', blurb: 'Lines of symmetry', gen: genSymmetry, cards: cardsSymmetry },
+  { id: 'measure', name: 'Measuring Angles', grade: 'Grade 4', icon: '📏', blurb: 'Protractors and missing angles', gen: genAngleMeasure, cards: cardsAngleMeasure },
+  { id: 'families', name: 'Shape Families', grade: 'Grade 5', icon: '🌳', blurb: 'How shapes are related', gen: genFamilies, cards: cardsFamilies },
+  { id: 'volume', name: 'Volume', grade: 'Grade 5', icon: '📦', blurb: 'How much fits inside a box', gen: genVolume, cards: cardsVolume },
+  { id: 'coord', name: 'Coordinate Grid', grade: 'Grade 5', icon: '🗺️', blurb: 'Find points with (x, y)', gen: genCoord, cards: cardsCoord }
+];
+
+</script>
+<script>
+'use strict';
+/* ============================================================
+   Geometry Quest - app logic (screens, scoring, coaching, review)
+   ============================================================ */
+const $app = document.getElementById('app');
+const KEY = 'geometryQuest.v1';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ---------- storage ---------- */
+const defaults = () => ({ v: 1, name: '', placed: false, xp: 0, skills: {}, review: [], answered: 0, settings: { autoRead: false, unlockAll: false }, created: Date.now() });
+let S;
+function load() {
+  try { const r = localStorage.getItem(KEY); S = r ? Object.assign(defaults(), JSON.parse(r)) : defaults(); }
+  catch (e) { S = defaults(); }
+  S.settings = Object.assign({ autoRead: false, unlockAll: false }, S.settings);
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private mode: keep in memory */ } }
+const sk = id => S.skills[id] || (S.skills[id] = { sessions: 0, correct: 0, total: 0, stars: 0, best: 0, mastered: false, placed: false, recent: [] });
+const idxOf = id => SKILLS.findIndex(s => s.id === id);
+const skillOf = id => SKILLS[idxOf(id)];
+const isUnlocked = i => i === 0 || S.settings.unlockAll || sk(SKILLS[i - 1].id).mastered;
+const strength = id => { const r = sk(id).recent; return r.length ? r.reduce((a, b) => a + b, 0) / r.length : 0; };
+const stars = n => '★'.repeat(n) + '☆'.repeat(3 - n);
+const RANKS = [[0, 'Shape Rookie'], [150, 'Shape Scout'], [400, 'Angle Ace'], [800, 'Polygon Pro'], [1400, 'Geometry Ranger'], [2200, 'Math Wizard'], [3500, 'Geometry Master']];
+const rankIdx = xp => { let r = 0; RANKS.forEach((x, i) => { if (xp >= x[0]) r = i; }); return r; };
+const rankName = xp => RANKS[rankIdx(xp)][1];
+function rankProgress(xp) { const i = rankIdx(xp), a = RANKS[i][0], b = RANKS[i + 1] ? RANKS[i + 1][0] : null; return b ? { pct: Math.round((xp - a) / (b - a) * 100), next: b - xp, nextName: RANKS[i + 1][1] } : { pct: 100, next: 0, nextName: null }; }
+const uidn = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+/* ---------- speech ---------- */
+function plain(s) {
+  return String(s).replace(/<[^>]+>/g, ' ').replace(/°/g, ' degrees').replace(/×/g, ' times ').replace(/÷/g, ' divided by ').replace(/−/g, ' minus ').replace(/\+/g, ' plus ').replace(/=/g, ' equals ').replace(/→/g, ' then ')
+    .replace(/²/g, ' squared').replace(/\(([^)]*)\)/g, ', $1,');
+}
+function speak(t) {
+  try {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(plain(t)); u.rate = .88; u.pitch = 1.05;
+    const v = speechSynthesis.getVoices().find(v => /^en[-_]US/i.test(v.lang) && /samantha|ava|allison|google us|female|zira/i.test(v.name)) || speechSynthesis.getVoices().find(v => /^en/i.test(v.lang));
+    if (v) u.voice = v; speechSynthesis.speak(u);
+  } catch (e) { /* ignore */ }
+}
+const stopSpeak = () => { try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } };
+function qSpeech(q) { let t = q.prompt; if (!q.pics) t += ' ' + q.choices.map((c, i) => `${'ABCD'[i]}. ${c.label}.`).join(' '); return t; }
+
+/* ---------- view helpers ---------- */
+function view(html) { $app.innerHTML = html; window.scrollTo(0, 0); }
+const topbar = (right = '') => `<header class="top"><button class="logo" data-act="home" aria-label="Home">📐 <b>Geometry Quest</b></button><div class="top-r">${right}</div></header>`;
+let Q = null, L = null, toastT = null;
+function toast(msg) { let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); } t.textContent = msg; t.className = 'show'; clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 2600); }
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+function welcome() {
+  view(`<section class="hero card"><div class="big">📐</div><h1>Geometry Quest</h1>
+  <p class="lead">Shapes, angles, triangles and more. Level up from the basics to 5th grade math!</p>
+  <label class="field">What's your name?<input id="nm" type="text" maxlength="20" autocomplete="off" placeholder="Type your name" value="${esc(S.name)}"></label>
+  <button class="btn primary big-btn" data-act="saveName">Let's go! 🚀</button></section>`);
+  setTimeout(() => { const e = document.getElementById('nm'); if (e) e.focus(); }, 50);
+}
+function placeIntro() {
+  view(`${topbar()}<section class="card center"><div class="big">🧭</div><h2>Let's find your starting level, ${esc(S.name)}!</h2>
+  <p class="lead">Answer a few quick questions. They start easy and get harder. When they get tricky, we'll know where to begin. No worries about mistakes!</p>
+  <button class="btn primary big-btn" data-act="startPlacement">Find my level</button>
+  <button class="btn ghost" data-act="skipPlacement">Skip: start at the very beginning</button></section>`);
+}
+function home() {
+  stopSpeak(); Q = null;
+  const rp = rankProgress(S.xp), mastered = SKILLS.filter(s => sk(s.id).mastered).length;
+  const next = SKILLS.findIndex((s, i) => isUnlocked(i) && !sk(s.id).mastered);
+  const touched = SKILLS.filter(s => sk(s.id).sessions > 0 || sk(s.id).mastered);
+  const totalStars = SKILLS.reduce((a, s) => a + sk(s.id).stars, 0);
+  const nextSk = next >= 0 ? SKILLS[next] : null;
+  let h = topbar(`<button class="icon-btn" data-act="progress" aria-label="My progress">📊</button><button class="icon-btn" data-act="settings" aria-label="Parent settings">⚙️</button>`);
+  h += `<section class="card welcome-card"><div class="wc-l"><h2>Hi ${esc(S.name || 'there')}! 👋</h2><div class="rank">🏅 ${esc(rankName(S.xp))}</div>
+    <div class="xp"><i style="width:${rp.pct}%"></i></div><div class="small muted">${S.xp} XP${rp.nextName ? ` · ${rp.next} more XP to <b>${esc(rp.nextName)}</b>` : ' · Top rank!'}</div></div>
+    <div class="wc-r"><div class="stat"><b>${mastered}/${SKILLS.length}</b><span>levels mastered</span></div><div class="stat"><b>${totalStars}</b><span>⭐ stars</span></div></div></section>`;
+  h += `<div class="actions-row">`;
+  if (nextSk) h += `<button class="btn primary big-btn" data-act="continue">▶ ${sk(nextSk.id).sessions ? 'Continue' : 'Start'}: ${esc(nextSk.name)}</button>`;
+  else h += `<div class="card center win">🏆 You mastered every level! Try a Mixed Challenge.</div>`;
+  h += `<button class="btn" data-act="reviewHub">🔁 Review mistakes${S.review.length ? ` <span class="badge">${S.review.length}</span>` : ''}</button>
+        <button class="btn" data-act="mixed" ${touched.length < 2 ? 'disabled title="Practice 2 levels first"' : ''}>🎲 Mixed challenge</button></div>`;
+  h += `<h3 class="sect">Your levels</h3><div class="skills">`;
+  SKILLS.forEach((s, i) => {
+    const r = sk(s.id), un = isUnlocked(i), state = !un ? 'locked' : r.mastered ? 'done' : r.sessions ? 'doing' : 'new';
+    h += `<button class="skill ${state}" data-act="${un ? 'skill' : 'locked'}" data-id="${s.id}" ${un ? '' : 'aria-disabled="true"'}>
+      <span class="s-num">${i + 1}</span><span class="s-icon">${un ? s.icon : '🔒'}</span><span class="s-name">${esc(s.name)}</span><span class="chip">${s.grade}</span>
+      <span class="s-stars" aria-label="${r.stars} of 3 stars">${stars(r.stars)}</span><span class="meter"><i style="width:${Math.round(strength(s.id) * 100)}%"></i></span>
+      <span class="s-state">${state === 'locked' ? 'Locked' : state === 'new' ? 'New!' : state === 'done' ? (r.placed && !r.sessions ? 'Placed out ✓' : 'Mastered ✓') : 'Keep going'}</span></button>`;
+  });
+  h += `</div>`;
+  view(h);
+}
+function skillMenu(id) {
+  const s = skillOf(id), r = sk(id), n = S.review.filter(x => x.skill === id).length;
+  view(`${topbar()}<section class="card center"><div class="big">${s.icon}</div><span class="chip">${s.grade}</span><h2>${esc(s.name)}</h2><p class="lead">${esc(s.blurb)}</p>
+   <div class="stars-big">${stars(r.stars)}</div><p class="small muted">${r.sessions ? `Best score: ${r.best}% · Played ${r.sessions} time${r.sessions > 1 ? 's' : ''}` : 'You have not tried this level yet.'}${r.placed && !r.sessions ? ' · You placed out of this level.' : ''}</p>
+   <div class="stack"><button class="btn big-btn" data-act="learn" data-id="${id}">📖 Learn it (flashcards)</button>
+   <button class="btn primary big-btn" data-act="practice" data-id="${id}">🎯 Practice (10 questions)</button>
+   ${n ? `<button class="btn" data-act="reviewSkill" data-id="${id}">🔁 Review my ${n} missed question${n > 1 ? 's' : ''}</button>` : ''}
+   <button class="btn ghost" data-act="home">← Back to levels</button></div><p class="small muted">Get 8 out of 10 right on the first try to master this level and unlock the next.</p></section>`);
+}
+
+/* ---------- flashcards ---------- */
+function openLearn(id, overlay, after) {
+  const s = skillOf(id); L = { id, i: 0, flipped: false, cards: s.cards(), overlay: !!overlay, after: after || 'menu' }; renderLearn();
+}
+function renderLearn() {
+  const c = L.cards[L.i], last = L.i === L.cards.length - 1, s = skillOf(L.id);
+  const body = `<div class="learn"><div class="learn-head"><b>${s.icon} ${esc(s.name)}</b><span class="muted">Card ${L.i + 1} of ${L.cards.length}</span></div>
+   <div class="flip ${L.flipped ? 'flipped' : ''}" data-act="flip" role="button" tabindex="0" aria-label="Flip card"><div class="flip-in">
+    <div class="face front"><div class="vis">${c.v}</div><div class="fq">${esc(c.q || 'What is this?')}</div><div class="hintline">Tap the card to flip it 🔄</div></div>
+    <div class="face back"><h2>${esc(c.t)}</h2><p>${esc(c.d)}</p></div></div></div>
+   <div class="nav"><button class="btn" data-act="lprev" ${L.i === 0 ? 'disabled' : ''}>◀ Back</button><button class="btn" data-act="lspeak">🔊 Read</button>
+   ${last ? (L.overlay ? `<button class="btn primary" data-act="lclose">Got it! ✓</button>` : `<button class="btn primary" data-act="lpractice">Practice now 🎯</button>`) : `<button class="btn primary" data-act="lnext">Next ▶</button>`}</div>
+   ${L.overlay ? '' : `<button class="btn ghost" data-act="lexit">← Back</button>`}</div>`;
+  if (L.overlay) {
+    let o = document.getElementById('overlay'); if (!o) { o = document.createElement('div'); o.id = 'overlay'; document.body.appendChild(o); }
+    o.innerHTML = `<div class="sheet"><button class="x" data-act="lclose" aria-label="Close">✕</button>${body}</div>`;
+  } else view(topbar() + body);
+}
+
+/* ============================================================
+   SESSIONS
+   ============================================================ */
+const sigOf = q => q.prompt + '|' + q.choices.find(c => c.ok).label + '|' + (q.visual ? q.visual.length : 0) + '|' + q.choices.map(c => (c.label || (c.svg || '').length)).join(',');
+function newSession(mode, extra) {
+  stopSpeak();
+  Q = Object.assign({ mode, total: 10, idx: 0, correct: 0, points: 0, streak: 0, bestStreak: 0, d: 0, hot: 0, missed: 0, sigs: new Set(), cur: null, tries: 0, locked: false, disabled: new Set(), skillId: null, queue: null, firstMissIds: [] }, extra || {});
+  nextQ();
+}
+function startPractice(id) {
+  const r = sk(id); newSession('practice', { skillId: id, d: r.mastered || r.best >= 60 ? 1 : 0 });
+}
+function startMixed() {
+  const pool = SKILLS.filter(s => sk(s.id).sessions > 0 || sk(s.id).mastered); if (pool.length < 1) return toast('Practice a level first!');
+  newSession('mixed', { pool, d: 1 });
+}
+function startReview(skillId) {
+  let items = S.review.filter(x => !skillId || x.skill === skillId); if (!items.length) return toast('No mistakes to review. Great job! 🎉');
+  items = items.slice().sort((a, b) => a.streak - b.streak || a.t - b.t).slice(0, 10);
+  newSession('review', { queue: shuffle(items), total: Math.min(10, items.length), skillId: skillId || null });
+}
+function startPlacement() { newSession('placement', { total: 999, d: 1, pl: { si: 0, qi: 0, right: 0 } }); }
+function genFor(sid, d) { const s = skillOf(sid); for (let i = 0; i < 8; i++) { const q = s.gen(d); const g = sigOf(q); if (!Q.sigs.has(g)) { Q.sigs.add(g); q._skill = sid; return q; } } const q = s.gen(d); q._skill = sid; return q; }
+function nextQ() {
+  Q.tries = 0; Q.locked = false; Q.disabled = new Set();
+  if (Q.mode === 'review') { const it = Q.queue[Q.idx]; Q.item = it; Q.cur = it.q; }
+  else if (Q.mode === 'mixed') {
+    const w = Q.pool.map(s => 1 + (1 - strength(s.id)) * 2 + S.review.filter(x => x.skill === s.id).length * .3); let r = Math.random() * w.reduce((a, b) => a + b, 0), k = 0;
+    for (; k < w.length - 1; k++) { r -= w[k]; if (r <= 0) break; }
+    Q.cur = genFor(Q.pool[k].id, Q.d);
+  }
+  else if (Q.mode === 'placement') Q.cur = genFor(SKILLS[Q.pl.si].id, 1);
+  else Q.cur = genFor(Q.skillId, Q.d);
+  renderQuiz();
+  if (S.settings.autoRead) speak(qSpeech(Q.cur));
+}
+function renderQuiz() {
+  const q = Q.cur, sid = q._skill || Q.skillId, s = skillOf(sid), pl = Q.mode === 'placement';
+  const label = pl ? 'Finding your level' : Q.mode === 'review' ? 'Review time' : Q.mode === 'mixed' ? 'Mixed challenge' : s.name;
+  const sub = Q.mode === 'review' || Q.mode === 'mixed' ? `<span class="chip">${s.icon} ${esc(s.name)}</span>` : '';
+  const pct = pl ? Math.min(95, Q.idx * 6) : Math.round(Q.idx / Q.total * 100);
+  view(`<header class="top q-top"><button class="icon-btn" data-act="quit" aria-label="Quit">✕</button><div class="q-title"><b>${esc(label)}</b>${sub}</div>
+   <div class="q-stats">${pl ? '' : `<span id="pts">⭐ ${Q.points}</span><span id="stk" class="${Q.streak >= 3 ? 'hot' : ''}">🔥 ${Q.streak}</span>`}</div></header>
+   <div class="bar" role="progressbar" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div><div class="small muted qn">${pl ? `Question ${Q.idx + 1}` : `Question ${Q.idx + 1} of ${Q.total}`}</div>
+   <section class="card qcard"><div class="prompt"><p>${esc(q.prompt)}</p><button class="speak" data-act="speakQ" aria-label="Read the question aloud">🔊</button></div>
+   ${q.visual ? `<div class="visual">${q.visual}</div>` : ''}
+   <div class="choices ${q.pics ? 'pics' : ''} n${q.choices.length}" role="group">${q.choices.map((c, i) => `<button class="choice" data-act="choose" data-i="${i}"><span class="key">${i + 1}</span>${c.svg !== undefined ? `<span class="cpic">${c.svg}</span>` : `<span class="clabel">${esc(c.label)}</span>`}</button>`).join('')}</div>
+   <div id="coach" class="coach" aria-live="polite" hidden></div></section>`);
+}
+function markChoices(pickIdx) {
+  document.querySelectorAll('.choice').forEach(b => {
+    const i = +b.dataset.i;
+    if (Q.disabled.has(i)) { b.classList.add('wrong'); b.disabled = true; }
+    if (Q.locked) { b.disabled = true; if (Q.cur.choices[i].ok) b.classList.add('right'); }
+  });
+}
+function coach(html, kind) {
+  const c = document.getElementById('coach'); c.hidden = false; c.className = 'coach ' + kind; c.innerHTML = html;
+  c.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+function updateStats() { const p = document.getElementById('pts'), k = document.getElementById('stk'); if (p) p.textContent = '⭐ ' + Q.points; if (k) { k.textContent = '🔥 ' + Q.streak; k.className = Q.streak >= 3 ? 'hot' : ''; } }
+const praise = ['Great job!', 'Awesome!', 'Nice work!', 'You got it!', 'Super!', 'Brilliant!'];
+function adapt(firstTryOk) { if (firstTryOk) { Q.hot++; if (Q.hot >= 2 && Q.d < 2) { Q.d++; Q.hot = 0; } } else { Q.hot = 0; if (Q.d > 0) Q.d--; } }
+function record(sid, ok) { const r = sk(sid); r.total++; if (ok) r.correct++; r.recent.push(ok ? 1 : 0); if (r.recent.length > 20) r.recent.shift(); S.answered++; }
+function addToBank(q) {
+  const g = sigOf(q); if (S.review.some(x => x.sig === g)) return;
+  S.review.push({ id: uidn(), sig: g, skill: q._skill, q: JSON.parse(JSON.stringify(q)), streak: 0, t: Date.now() });
+  if (S.review.length > 120) S.review.shift();
+}
+const lessonBtn = () => `<button class="btn small-btn" data-act="lesson">📖 Show me the lesson</button>`;
+function choose(i) {
+  if (!Q || Q.locked || Q.disabled.has(i)) return;
+  const q = Q.cur, ok = q.choices[i].ok;
+  if (Q.mode === 'placement') return placementAnswer(i, ok);
+  Q.tries++;
+  const sid = q._skill;
+  if (ok) {
+    if (Q.tries === 1) {
+      Q.streak++; Q.bestStreak = Math.max(Q.bestStreak, Q.streak); Q.correct++;
+      const bonus = Q.streak >= 5 ? 5 : Q.streak >= 3 ? 2 : 0, pts = Q.mode === 'review' ? 5 : 10 + bonus; Q.points += pts;
+      record(sid, true); adapt(true);
+      if (Q.mode === 'review') { Q.item.streak++; if (Q.item.streak >= 2) { S.review = S.review.filter(x => x.id !== Q.item.id); Q.cleared = (Q.cleared || 0) + 1; } }
+      Q.locked = true; markChoices(); updateStats();
+      const note = Q.mode === 'review' ? (Q.item.streak >= 2 ? '🎉 Mastered! This one is cleared from your review list.' : '1 more right answer clears it from your review list.') : '';
+      coach(`<div class="c-head">✅ ${pick(praise)} <b>+${pts}</b>${bonus ? ` <span class="bonus">🔥 streak bonus +${bonus}</span>` : ''}</div>${q.explain ? `<p>${esc(q.explain)}</p>` : ''}${note ? `<p class="note">${note}</p>` : ''}${nextBtn()}`, 'good');
+    } else {
+      Q.points += 5; Q.streak = 0; Q.locked = true; markChoices(); updateStats();
+      coach(`<div class="c-head">👍 You got it on the second try! <b>+5</b></div><p>${esc(q.explain)}</p>${q.solved ? `<div class="solved">${q.solved}</div>` : ''}${nextBtn()}`, 'ok');
+    }
+    save(); return;
+  }
+  // wrong answer
+  Q.disabled.add(i);
+  if (Q.tries === 1) {
+    Q.streak = 0; record(sid, false); adapt(false); Q.missed++;
+    if (Q.mode === 'review') Q.item.streak = 0; else addToBank(q);
+    updateStats(); markChoices(); save();
+    const why = q.choices[i].why;
+    coach(`<div class="c-head">🤔 Not quite, but good try!</div>${why ? `<p>${esc(why)}</p>` : ''}<p class="hint">💡 <b>Hint:</b> ${esc(q.hint)}</p><p class="note">Pick another answer. You can try once more!</p><div class="c-actions"><button class="btn small-btn" data-act="speakHint">🔊 Read hint</button>${lessonBtn()}</div>`, 'warn');
+  } else {
+    Q.locked = true; markChoices();
+    const right = q.choices[q.answer];
+    coach(`<div class="c-head">📘 Let's learn from this one</div><p>The correct answer is <b>${right.label !== undefined ? esc(right.label) : 'the highlighted picture'}</b>.</p><p>${esc(q.explain)}</p>${q.solved ? `<div class="solved">${q.solved}</div>` : ''}<p class="note">We saved this question in <b>Review</b> so you can try it again later.</p><div class="c-actions"><button class="btn small-btn" data-act="speakExplain">🔊 Read it to me</button>${lessonBtn()}</div>${nextBtn()}`, 'bad');
+  }
+  save();
+}
+const nextBtn = () => `<button class="btn primary next" data-act="next">${Q.idx + 1 >= Q.total ? 'See my results 🎉' : 'Next ▶'}</button>`;
+function next() { if (!Q || !Q.locked) return; Q.idx++; stopSpeak(); if (Q.idx >= Q.total) finishSession(); else nextQ(); }
+
+/* ---------- placement ---------- */
+function placementAnswer(i, ok) {
+  Q.locked = true; markChoices(); const mine = Q;
+  const c = document.getElementById('coach'); c.hidden = false; c.className = 'coach ' + (ok ? 'good' : 'neutral'); c.innerHTML = ok ? '<div class="c-head">✅ Got it!</div>' : '<div class="c-head">👍 Thanks! On to the next one.</div>';
+  if (ok) Q.pl.right++; Q.idx++;
+  setTimeout(() => {
+    if (Q !== mine) return; const pl = Q.pl; pl.qi++;
+    if (pl.qi === 2) {
+      if (pl.right === 2) { const r = sk(SKILLS[pl.si].id); r.mastered = true; r.placed = true; r.stars = Math.max(r.stars, 2); r.best = Math.max(r.best, 100); pl.si++; pl.qi = 0; pl.right = 0; if (pl.si >= SKILLS.length) return placementDone(); }
+      else return placementDone();
+    }
+    nextQ();
+  }, ok ? 800 : 1200);
+}
+function placementDone() {
+  S.placed = true; save(); Q = null;
+  const start = SKILLS.findIndex((s, i) => !sk(s.id).mastered); const placedOut = SKILLS.filter(s => sk(s.id).placed && sk(s.id).sessions === 0).length;
+  view(`${topbar()}<section class="card center"><div class="big">🎯</div><h2>All set, ${esc(S.name)}!</h2>
+  ${start >= 0 ? `<p class="lead">${placedOut ? `You already know ${placedOut} level${placedOut > 1 ? 's' : ''}. Awesome!` : 'Everyone starts somewhere. Let\'s build your skills!'}<br>You will start at <b>Level ${start + 1}: ${esc(SKILLS[start].name)}</b>.</p>` : `<p class="lead">Wow! You already know everything here. Try a Mixed Challenge!</p>`}
+  <button class="btn primary big-btn" data-act="home">Show my levels</button></section>`);
+}
+
+/* ---------- finish ---------- */
+function finishSession() {
+  const mode = Q.mode, acc = Q.total ? Q.correct / Q.total : 0, pct = Math.round(acc * 100), st = acc >= .95 ? 3 : acc >= .8 ? 2 : acc >= .6 ? 1 : 0;
+  let unlocked = null, passed = false, bonus = 0;
+  if (mode === 'practice') {
+    const r = sk(Q.skillId); r.sessions++; r.best = Math.max(r.best, pct); r.stars = Math.max(r.stars, st);
+    passed = acc >= .8; bonus = st * 20;
+    if (passed && !r.mastered) { r.mastered = true; const i = idxOf(Q.skillId); if (SKILLS[i + 1]) unlocked = SKILLS[i + 1]; bonus += 50; }
+  }
+  if (mode === 'mixed') bonus = st * 10;
+  S.xp += Q.points + bonus; save();
+  const i = Q.skillId ? idxOf(Q.skillId) : -1, nextS = i >= 0 ? SKILLS[i + 1] : null, canNext = nextS && isUnlocked(i + 1);
+  const msg = mode === 'review' ? (Q.cleared ? `You cleared ${Q.cleared} question${Q.cleared > 1 ? 's' : ''} from your review list!` : 'Keep practicing. 2 right answers in a row clears a question.')
+    : passed ? 'You mastered this level! 🎉' : acc >= .6 ? 'Good progress! A little more practice and you will master it.' : 'This one is tricky. Try the flashcards, then practice again. You can do it!';
+  let h = `${topbar()}<section class="card center results"><h2>${mode === 'review' ? 'Review complete!' : mode === 'mixed' ? 'Challenge complete!' : 'Level complete!'}</h2>
+   ${mode !== 'review' ? `<div class="stars-big pop">${stars(st)}</div>` : '<div class="big">🔁</div>'}
+   <div class="res-grid"><div class="stat"><b>${Q.correct}/${Q.total}</b><span>right on the first try</span></div><div class="stat"><b>${pct}%</b><span>score</span></div><div class="stat"><b>+${Q.points + bonus}</b><span>⭐ points</span></div><div class="stat"><b>${Q.bestStreak}</b><span>🔥 best streak</span></div></div>
+   <p class="lead">${msg}</p>${bonus ? `<p class="small muted">Includes +${bonus} bonus points${unlocked ? ' for mastering the level' : ''}.</p>` : ''}
+   ${unlocked ? `<div class="unlock">🔓 New level unlocked: <b>${unlocked.icon} ${esc(unlocked.name)}</b></div>` : ''}
+   ${Q.missed && mode !== 'review' ? `<p class="small">You missed ${Q.missed} question${Q.missed > 1 ? 's' : ''}. They are saved in <b>Review</b>.</p>` : ''}
+   <div class="stack">`;
+  if (mode === 'practice') {
+    if (passed && canNext) h += `<button class="btn primary big-btn" data-act="learn" data-id="${nextS.id}">Next level: ${esc(nextS.name)} ➜</button>`;
+    else if (!passed) h += `<button class="btn primary big-btn" data-act="learn" data-id="${Q.skillId}">📖 Study the flashcards</button>`;
+    h += `<button class="btn ${passed && canNext ? '' : 'primary'}" data-act="practice" data-id="${Q.skillId}">🎯 Practice again</button>`;
+  }
+  if (mode === 'mixed') h += `<button class="btn primary big-btn" data-act="mixed">🎲 Another challenge</button>`;
+  if (mode === 'review' && S.review.length) h += `<button class="btn primary big-btn" data-act="reviewHub">🔁 More review (${S.review.length} left)</button>`;
+  if (S.review.length && mode !== 'review') h += `<button class="btn" data-act="reviewHub">🔁 Review mistakes (${S.review.length})</button>`;
+  h += `<button class="btn ghost" data-act="home">🏠 Back to levels</button></div></section>`;
+  Q = null; view(h);
+}
+
+/* ---------- review / progress / settings ---------- */
+function reviewHub() {
+  const by = {}; S.review.forEach(x => by[x.skill] = (by[x.skill] || 0) + 1);
+  let h = topbar() + `<section class="card"><h2>🔁 Review your mistakes</h2><p class="lead">Questions you missed are saved here. Get each one right <b>2 times</b> and it is cleared.</p>`;
+  if (!S.review.length) h += `<div class="empty">🎉 Nothing to review right now. Keep practicing and any missed questions will show up here.</div>`;
+  else {
+    h += `<button class="btn primary big-btn" data-act="reviewAll">Start review (${Math.min(10, S.review.length)} questions)</button><h3 class="sect">By topic</h3><div class="list">`;
+    SKILLS.filter(s => by[s.id]).forEach(s => { h += `<div class="row"><span class="r-ico">${s.icon}</span><div class="r-main"><b>${esc(s.name)}</b><span class="small muted">${by[s.id]} to review</span></div><button class="btn small-btn" data-act="learn" data-id="${s.id}">📖 Learn</button><button class="btn small-btn primary" data-act="reviewSkill" data-id="${s.id}">Review</button></div>`; });
+    h += `</div>`;
+  }
+  view(h + `<button class="btn ghost" data-act="home">← Back</button></section>`);
+}
+function progress() {
+  const tot = SKILLS.reduce((a, s) => a + sk(s.id).total, 0), cor = SKILLS.reduce((a, s) => a + sk(s.id).correct, 0), mastered = SKILLS.filter(s => sk(s.id).mastered).length;
+  let h = topbar() + `<section class="card"><h2>📊 ${esc(S.name || 'My')} progress</h2>
+  <div class="res-grid"><div class="stat"><b>${mastered}/${SKILLS.length}</b><span>levels mastered</span></div><div class="stat"><b>${tot ? Math.round(cor / tot * 100) : 0}%</b><span>first-try accuracy</span></div><div class="stat"><b>${S.xp}</b><span>XP · ${esc(rankName(S.xp))}</span></div><div class="stat"><b>${S.review.length}</b><span>to review</span></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Level</th><th>Grade</th><th>Status</th><th>Stars</th><th>Recent strength</th><th>Questions</th></tr></thead><tbody>`;
+  SKILLS.forEach((s, i) => { const r = sk(s.id), un = isUnlocked(i); h += `<tr class="${un ? '' : 'dim'}"><td>${i + 1}. ${esc(s.name)}</td><td>${s.grade}</td><td>${!un ? 'Locked' : r.mastered ? (r.placed && !r.sessions ? 'Placed out' : 'Mastered') : r.sessions ? 'In progress' : 'Not started'}</td><td class="gold">${stars(r.stars)}</td><td><span class="meter inline"><i style="width:${Math.round(strength(s.id) * 100)}%"></i></span> ${r.recent.length ? Math.round(strength(s.id) * 100) + '%' : '–'}</td><td>${r.correct}/${r.total}</td></tr>`; });
+  h += `</tbody></table></div><p class="small muted">"Recent strength" is the share of the last 20 questions in each level answered correctly on the first try. Review the levels with low strength.</p><button class="btn ghost" data-act="home">← Back</button></section>`;
+  view(h);
+}
+function settings() {
+  view(topbar() + `<section class="card"><h2>⚙️ Parent settings</h2>
+  <label class="field">Child's name<input id="nm" type="text" maxlength="20" value="${esc(S.name)}"></label>
+  <label class="check"><input type="checkbox" id="autoRead" ${S.settings.autoRead ? 'checked' : ''}> Read each question aloud automatically</label>
+  <label class="check"><input type="checkbox" id="unlockAll" ${S.settings.unlockAll ? 'checked' : ''}> Unlock all levels (skip the mastery requirement)</label>
+  <div class="stack"><button class="btn primary" data-act="saveSettings">Save settings</button>
+  <button class="btn" data-act="redoPlacement">🧭 Redo the placement quiz</button>
+  <button class="btn" data-act="export">📋 Copy progress backup code</button>
+  <label class="field" style="max-width:none">Restore from a backup code<textarea id="impTxt" rows="3" style="display:block;width:100%;margin-top:6px;padding:10px;font:inherit;border:2px solid var(--line);border-radius:14px" placeholder="Paste a backup code here"></textarea></label>
+  <button class="btn" data-act="import">⬆ Restore progress</button>
+  <button class="btn danger" data-act="reset">Reset all progress</button><button class="btn ghost" data-act="home">← Back</button></div>
+  <p class="small muted">Progress is saved in this web browser on this device. Use the backup button to move it to another device.</p></section>`);
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+function twice(b, msg) {
+  if (b.dataset.armed) return true;
+  const old = b.textContent; b.dataset.armed = '1'; b.textContent = msg; b.classList.add('armed');
+  setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = old; b.classList.remove('armed'); } }, 4000); return false;
+}
+const ACT = {
+  home, progress, settings, reviewHub,
+  saveName() { const v = document.getElementById('nm').value.trim(); if (!v) return toast('Please type your name first.'); S.name = v; save(); S.placed ? home() : placeIntro(); },
+  startPlacement, skipPlacement() { S.placed = true; save(); home(); },
+  continue() { const i = SKILLS.findIndex((s, k) => isUnlocked(k) && !sk(s.id).mastered); if (i < 0) return; const id = SKILLS[i].id; sk(id).sessions ? startPractice(id) : openLearn(id, false, 'practice'); },
+  skill(e, b) { skillMenu(b.dataset.id); }, locked() { toast('🔒 Master the level before it (8 out of 10) to unlock this one.'); },
+  learn(e, b) { openLearn(b.dataset.id, false); },
+  practice(e, b) { startPractice(b.dataset.id); }, mixed: startMixed, reviewAll() { startReview(); }, reviewSkill(e, b) { startReview(b.dataset.id); },
+  flip() { L.flipped = !L.flipped; const f = document.querySelector('.flip'); if (f) f.classList.toggle('flipped', L.flipped); },
+  lnext() { L.i++; L.flipped = false; renderLearn(); }, lprev() { L.i--; L.flipped = false; renderLearn(); },
+  lspeak() { const c = L.cards[L.i]; speak(L.flipped ? c.t + '. ' + c.d : (c.q || 'What is this?')); },
+  lclose() { const o = document.getElementById('overlay'); if (o) o.remove(); stopSpeak(); L = null; },
+  lpractice() { const id = L.id; L = null; startPractice(id); }, lexit() { const id = L.id; L = null; skillMenu(id); },
+  lesson() { openLearn(Q.cur._skill || Q.skillId, true); },
+  quit() { stopSpeak(); Q = null; home(); },
+  speakQ() { speak(qSpeech(Q.cur)); }, speakHint() { speak('Hint. ' + Q.cur.hint); }, speakExplain() { speak(Q.cur.explain); },
+  choose(e, b) { choose(+b.dataset.i); }, next,
+  saveSettings() { const v = document.getElementById('nm').value.trim(); if (v) S.name = v; S.settings.autoRead = document.getElementById('autoRead').checked; S.settings.unlockAll = document.getElementById('unlockAll').checked; save(); toast('Saved ✓'); home(); },
+  redoPlacement(e, b) { if (!twice(b, 'Tap again to redo the quiz')) return; placeIntro(); },
+  export(e, b) {
+    const code = JSON.stringify(S), t = document.getElementById('impTxt');
+    const fallback = () => { t.value = code; t.select(); toast('Select all and copy the code above.'); };
+    try { navigator.clipboard.writeText(code).then(() => toast('Backup code copied ✓'), fallback); } catch (er) { fallback(); }
+  },
+  import() { try { const d = JSON.parse(document.getElementById('impTxt').value.trim()); if (!d || d.v !== 1 || !d.skills) throw 0; S = Object.assign(defaults(), d); save(); toast('Progress restored ✓'); home(); } catch (er) { toast('That is not a valid backup code.'); } },
+  reset(e, b) { if (!twice(b, 'Tap again to erase everything')) return; const nm = S.name; S = defaults(); S.name = nm; save(); welcome(); }
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b || b.disabled) return;
+  if (b.closest('#overlay') && !['lclose', 'flip', 'lnext', 'lprev', 'lspeak'].includes(b.dataset.act)) return;
+  const f = ACT[b.dataset.act]; if (f) f(e, b);
+});
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea')) { if (e.key === 'Enter' && document.getElementById('nm') && ACT.saveName && document.querySelector('[data-act="saveName"]')) ACT.saveName(); return; }
+  if (e.target.matches('.flip') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); ACT.flip(); return; }
+  if (!Q || document.getElementById('overlay')) return;
+  if (/^[1-4]$/.test(e.key) && Q.cur && +e.key <= Q.cur.choices.length) choose(+e.key - 1);
+  else if ((e.key === 'Enter' || e.key === ' ') && Q.locked && Q.mode !== 'placement') { e.preventDefault(); next(); }
+});
+/* ---------- boot ---------- */
+load();
+if (!S.name) welcome(); else if (!S.placed) placeIntro(); else home();
+if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
+</script>
+
+</body></html>

@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
     // Framer Motion ships large; tree-shake aggressively at the package boundary.
     optimizePackageImports: ["framer-motion", "lucide-react"],
   },
+  async rewrites() {
+    // Geometry Quest is a self-contained static game served from /public.
+    return [{ source: "/geometry-quest", destination: "/geometry-quest/index.html" }];
+  },
   async headers() {
     return [
       {
